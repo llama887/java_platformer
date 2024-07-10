@@ -10,13 +10,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public class GamePanel extends JPanel {
-    public int x = 100, y = 100, x_step = 5, y_step = 5;
+    public int x = 100, y = 100, x_step = 5, y_step = 5, width = 100, height = 100;
 
     public GamePanel() {
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-
             }
 
             @Override
@@ -24,22 +23,18 @@ public class GamePanel extends JPanel {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:
                     case KeyEvent.VK_W:
-                        repaint();
                         y -= y_step;
                         break;
                     case KeyEvent.VK_DOWN:
                     case KeyEvent.VK_S:
-                        repaint();
                         y += y_step;
                         break;
                     case KeyEvent.VK_LEFT:
                     case KeyEvent.VK_A:
-                        repaint();
                         x -= x_step;
                         break;
                     case KeyEvent.VK_RIGHT:
                     case KeyEvent.VK_D:
-                        repaint();
                         x += x_step;
                         break;
                     default:
@@ -49,52 +44,44 @@ public class GamePanel extends JPanel {
 
             @Override
             public void keyReleased(KeyEvent e) {
-
             }
 
         });
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-
             }
         });
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
-
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
-
             }
         });
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.setColor(Color.CYAN);
         g.fillRect(x, y, 100, 100);
     }
-
 }

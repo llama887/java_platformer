@@ -8,9 +8,10 @@ public class GameWindow {
     public GameWindow(GamePanel gamePanel) {
         jframe = new JFrame();
         jframe.setTitle("Shooting Blind");
-        jframe.setSize(800, 600);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.add(gamePanel);
+        jframe.setResizable(false);
+        jframe.pack();
         jframe.setLocationRelativeTo(null);
         jframe.setVisible(true);
     }

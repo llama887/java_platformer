@@ -1,18 +1,31 @@
 package main;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.awt.Dimension;
+import java.io.File;
 
 public class GamePanel extends JPanel {
     public int x = 100, y = 100, x_step = 5, y_step = 5, width = 100, height = 100;
+    private BufferedImage image;
 
     public GamePanel() {
+        setPreferredSize(new Dimension(1280, 800));
+        // importing images
+        try {
+            image = ImageIO.read(new File("assets/player_sprites.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // handle inputs
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -81,7 +94,6 @@ public class GamePanel extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.CYAN);
-        g.fillRect(x, y, 100, 100);
+        g.drawImage(image.getSubimage(0, 0, 64, 40), x, y, null);
     }
 }

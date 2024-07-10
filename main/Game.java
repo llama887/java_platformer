@@ -6,8 +6,7 @@ public class Game {
     public Game(){
         gamePanel = new GamePanel();
         gameWindow = new GameWindow(gamePanel);
-    }
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
+        gamePanel.setFocusable(true);
+        gamePanel.requestFocus();
     }
 }

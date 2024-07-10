@@ -9,6 +9,7 @@ public class GameWindow {
         jframe.setSize(800, 600);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.add(gamePanel);
+        jframe.setLocationRelativeTo(null);
         jframe.setVisible(true);
     }
 }

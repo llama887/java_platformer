@@ -22,11 +22,12 @@ public class GamePanel extends JPanel {
     private BufferedImage image;
     private BufferedImage[][] animations = new BufferedImage[9][6];
     private int animationTick, animationIndex, animationSpeed = 12;
-    private Animation idleAnimation, runAnimation;
+    private Animation idleAnimation, runAnimation, jumpAnimation, fallingAnimation, groundAnimation, hitAnimation,
+            attack1Animation, jumpAttack1Animation, jumpAttack2Animation;
     private BufferedImage currentFrame;
 
     enum AnimationType {
-        IDLE, RUN
+        IDLE, RUN, JUMP, FALLING, GROUND, HIT, ATTACK_1, JUMP_ATTACK_1, JUMP_ATTACK_2
     }
 
     private AnimationType currentAnimation = AnimationType.IDLE;
@@ -48,7 +49,22 @@ public class GamePanel extends JPanel {
         idleAnimation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
                 new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 } });
         runAnimation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
-                new int[][] { { 1, 1 }, { 1, 1 }, { 2, 1 }, { 3, 1 }, { 4, 1 }, { 5, 1 } });
+                new int[][] { { 0, 1 }, { 1, 1 }, { 2, 1 }, { 3, 1 }, { 4, 1 }, { 5, 1 } });
+        jumpAnimation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
+                new int[][] { { 0, 2 }, { 1, 2 }, { 2, 2 } });
+        fallingAnimation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
+                new int[][] { { 0, 3 } });
+        groundAnimation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
+                new int[][] { { 0, 4 }, { 1, 4 } });
+        hitAnimation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
+                new int[][] { { 0, 5 }, { 1, 5 }, { 2, 5 }, { 3, 5 } });
+        attack1Animation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
+                new int[][] { { 0, 6 }, { 1, 6 }, { 2, 6 }, { 3, 6 } });
+        jumpAttack1Animation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
+                new int[][] { { 0, 7 }, { 1, 7 }, { 2, 7 } });
+        jumpAttack2Animation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
+                new int[][] { { 0, 8 }, { 1, 8 }, { 2, 8 } });
+
         // handle inputs
         addKeyListener(new KeyListener() {
             @Override
@@ -78,6 +94,9 @@ public class GamePanel extends JPanel {
                         currentAnimation = AnimationType.RUN;
                         x += xStep;
                         break;
+                    case KeyEvent.VK_SPACE:
+                        currentAnimation = AnimationType.JUMP_ATTACK_1;
+                        break;
                     default:
                         break;
                 }
@@ -85,6 +104,7 @@ public class GamePanel extends JPanel {
 
             @Override
             public void keyReleased(KeyEvent e) {
+                currentAnimation = AnimationType.IDLE;
             }
 
         });
@@ -122,10 +142,37 @@ public class GamePanel extends JPanel {
 
     private void updateAnimation() {
         if (animationTick >= animationSpeed) {
-            if (currentAnimation == AnimationType.IDLE) {
-                currentFrame = idleAnimation.nextFrame();
-            } else {
-                currentFrame = runAnimation.nextFrame();
+            switch (currentAnimation) {
+                case IDLE:
+                    currentFrame = idleAnimation.nextFrame();
+                    break;
+                case RUN:
+                    currentFrame = runAnimation.nextFrame();
+                    break;
+                case JUMP:
+                    currentFrame = jumpAnimation.nextFrame();
+                    break;
+                case FALLING:
+                    currentFrame = fallingAnimation.nextFrame();
+                    break;
+                case GROUND:
+                    currentFrame = groundAnimation.nextFrame();
+                    break;
+                case HIT:
+                    currentFrame = hitAnimation.nextFrame();
+                    break;
+                case ATTACK_1:
+                    currentFrame = attack1Animation.nextFrame();
+                    break;
+                case JUMP_ATTACK_1:
+                    currentFrame = jumpAttack1Animation.nextFrame();
+                    break;
+                case JUMP_ATTACK_2:
+                    currentFrame = jumpAttack2Animation.nextFrame();
+                    break;
+                default:
+                    currentFrame = idleAnimation.nextFrame();
+                    break;
             }
             animationTick = 0;
         }
@@ -135,6 +182,7 @@ public class GamePanel extends JPanel {
     public void paintComponent(Graphics g) {
         updateAnimation();
         super.paintComponent(g);
+        System.out.println(currentAnimation);
         g.drawImage(currentFrame, x, y, 128, 80, null);
     }
 }

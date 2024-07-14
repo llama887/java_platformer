@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 
 public class Animation {
     private BufferedImage image;
-    private BufferedImage[] animations;
+    private BufferedImage[] animation;
     private int spriteWidth, spriteHeight;
     private int currentIndex = 0;
 
@@ -19,27 +19,31 @@ public class Animation {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        animations = new BufferedImage[indexes.length];
+        animation = new BufferedImage[indexes.length];
         for (int i = 0; i < indexes.length; i++) {
-            animations[i] = image.getSubimage(indexes[i][0] * spriteWidth, indexes[i][1] * spriteHeight, spriteWidth,
+            animation[i] = image.getSubimage(indexes[i][0] * spriteWidth, indexes[i][1] * spriteHeight, spriteWidth,
                     spriteHeight);
         }
     }
 
     public BufferedImage getFrame() {
-        return animations[currentIndex];
+        return animation[currentIndex];
     }
 
     public BufferedImage getFrame(int index) {
-        return animations[index];
+        return animation[index];
     }
 
     public BufferedImage nextFrame() {
-        currentIndex = (currentIndex + 1) % animations.length;
-        return animations[currentIndex];
+        currentIndex = (currentIndex + 1) % animation.length;
+        return animation[currentIndex];
     }
 
-    public getAnimationLength() {
+    public int getAnimationLength() {
         return animation.length;
+    }
+
+    public boolean isLastFrame() {
+        return currentIndex == animation.length - 1;
     }
 }

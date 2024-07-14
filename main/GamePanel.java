@@ -2,6 +2,9 @@ package main;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
+import components.Animation;
+
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -14,8 +17,19 @@ import java.awt.Dimension;
 import java.io.File;
 
 public class GamePanel extends JPanel {
-    public int x = 100, y = 100, x_step = 5, y_step = 5, width = 100, height = 100;
+    public int x = 100, y = 100, xStep = 5, yStep = 5, width = 100, height = 100;
+    private final int spriteWidth = 64, spriteHeight = 40;
     private BufferedImage image;
+    private BufferedImage[][] animations = new BufferedImage[9][6];
+    private int animationTick, animationIndex, animationSpeed = 12;
+    private Animation idleAnimation, runAnimation;
+    private BufferedImage currentFrame;
+
+    enum AnimationType {
+        IDLE, RUN
+    }
+
+    private AnimationType currentAnimation = AnimationType.IDLE;
 
     public GamePanel() {
         setPreferredSize(new Dimension(1280, 800));
@@ -25,6 +39,16 @@ public class GamePanel extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // set animation frames
+        for (int i = 0; i < animations.length; i++) {
+            for (int j = 0; j < animations[i].length; j++) {
+                animations[i][j] = image.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth, spriteHeight);
+            }
+        }
+        idleAnimation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
+                new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 } });
+        runAnimation = new Animation("assets/player_sprites.png", spriteWidth, spriteHeight,
+                new int[][] { { 1, 1 }, { 1, 1 }, { 2, 1 }, { 3, 1 }, { 4, 1 }, { 5, 1 } });
         // handle inputs
         addKeyListener(new KeyListener() {
             @Override
@@ -36,19 +60,23 @@ public class GamePanel extends JPanel {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:
                     case KeyEvent.VK_W:
-                        y -= y_step;
+                        currentAnimation = AnimationType.RUN;
+                        y -= yStep;
                         break;
                     case KeyEvent.VK_DOWN:
                     case KeyEvent.VK_S:
-                        y += y_step;
+                        currentAnimation = AnimationType.RUN;
+                        y += yStep;
                         break;
                     case KeyEvent.VK_LEFT:
                     case KeyEvent.VK_A:
-                        x -= x_step;
+                        currentAnimation = AnimationType.RUN;
+                        x -= xStep;
                         break;
                     case KeyEvent.VK_RIGHT:
                     case KeyEvent.VK_D:
-                        x += x_step;
+                        currentAnimation = AnimationType.RUN;
+                        x += xStep;
                         break;
                     default:
                         break;
@@ -92,8 +120,21 @@ public class GamePanel extends JPanel {
         });
     }
 
+    private void updateAnimation() {
+        if (animationTick >= animationSpeed) {
+            if (currentAnimation == AnimationType.IDLE) {
+                currentFrame = idleAnimation.nextFrame();
+            } else {
+                currentFrame = runAnimation.nextFrame();
+            }
+            animationTick = 0;
+        }
+        animationTick++;
+    }
+
     public void paintComponent(Graphics g) {
+        updateAnimation();
         super.paintComponent(g);
-        g.drawImage(image.getSubimage(0, 0, 64, 40), x, y, null);
+        g.drawImage(currentFrame, x, y, 128, 80, null);
     }
 }

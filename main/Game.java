@@ -40,13 +40,14 @@ public class Game implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run() { // game loop
         double timePerFrame = 1000000000.0 / FPS;
         double timePerUpdate = 1000000000.0 / UPS;
         long previousTime = System.nanoTime();
         double updateDelta = 0;
         double renderDelta = 0;
         while (true) {
+            gamePanel.handleInputs();
             long currentTime = System.nanoTime();
             long deltaTime = currentTime - previousTime;
             updateDelta += (deltaTime) / timePerUpdate;

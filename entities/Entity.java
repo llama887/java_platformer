@@ -1,7 +1,5 @@
 package entities;
 
-import java.awt.Graphics;
-
 import utils.Vector2D;
 
 public abstract class Entity {

@@ -1,10 +1,6 @@
 package main;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
-import components.Animation;
-import entities.Player;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -12,12 +8,11 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.image.BufferedImage;
-import java.awt.Color;
 import java.awt.Dimension;
 
 public class GamePanel extends JPanel {
     private Game game;
+    private boolean key_w, key_a, key_s, key_d, key_space;
 
     public GamePanel(Game game) {
         this.game = game;
@@ -34,19 +29,19 @@ public class GamePanel extends JPanel {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:
                     case KeyEvent.VK_W:
-                        game.gameObjects.player.setMovementDirection(0, -1);
+                        key_w = true;
                         break;
                     case KeyEvent.VK_DOWN:
                     case KeyEvent.VK_S:
-                        game.gameObjects.player.setMovementDirection(0, 1);
+                        key_s = true;
                         break;
                     case KeyEvent.VK_LEFT:
                     case KeyEvent.VK_A:
-                        game.gameObjects.player.setMovementDirection(-1, 0);
+                        key_a = true;
                         break;
                     case KeyEvent.VK_RIGHT:
                     case KeyEvent.VK_D:
-                        game.gameObjects.player.setMovementDirection(1, 0);
+                        key_d = true;
                         break;
                     default:
                         break;
@@ -55,6 +50,26 @@ public class GamePanel extends JPanel {
 
             @Override
             public void keyReleased(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_UP:
+                    case KeyEvent.VK_W:
+                        key_w = false;
+                        break;
+                    case KeyEvent.VK_DOWN:
+                    case KeyEvent.VK_S:
+                        key_s = false;
+                        break;
+                    case KeyEvent.VK_LEFT:
+                    case KeyEvent.VK_A:
+                        key_a = false;
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                    case KeyEvent.VK_D:
+                        key_d = false;
+                        break;
+                    default:
+                        break;
+                }
             }
 
         });
@@ -88,6 +103,24 @@ public class GamePanel extends JPanel {
             public void mouseMoved(MouseEvent e) {
             }
         });
+    }
+
+    public void handleInputs() {
+        game.gameObjects.player.setMovementDirection(0, 0);
+        int playerXDirection = 0, playerYDirection = 0;
+        if (key_w) {
+            playerYDirection--;
+        }
+        if (key_s) {
+            playerYDirection++;
+        }
+        if (key_a) {
+            playerXDirection--;
+        }
+        if (key_d) {
+            playerXDirection++;
+        }
+        game.gameObjects.player.setMovementDirection(playerXDirection, playerYDirection);
     }
 
     public void paintComponent(Graphics g) {

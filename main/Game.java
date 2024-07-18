@@ -10,6 +10,12 @@ public class Game implements Runnable {
     private Thread thread;
     private final int FPS = 120;
     private final int UPS = 200;
+    private final static int TILE_SIZE_DEFAULT = 32;
+    public final static float SCALE = 1.5f;
+    public final static int HEIGHT_IN_TILES = 14;
+    public final static int LENGTH_IN_TILES = 26;
+    public final static int WIDTH = LENGTH_IN_TILES * (int) (TILE_SIZE_DEFAULT * SCALE);
+    public final static int HEIGHT = HEIGHT_IN_TILES * (int) (TILE_SIZE_DEFAULT * SCALE);
 
     public class GameObjects {
         public Player player;
@@ -47,7 +53,6 @@ public class Game implements Runnable {
         double updateDelta = 0;
         double renderDelta = 0;
         while (true) {
-            gamePanel.handleInputs();
             long currentTime = System.nanoTime();
             long deltaTime = currentTime - previousTime;
             updateDelta += (deltaTime) / timePerUpdate;

@@ -17,8 +17,7 @@ public class GamePanel extends JPanel {
     public GamePanel(Game game) {
         this.game = game;
         // set game panel size
-        setPreferredSize(new Dimension(1280, 800));
-        // handle inputs
+        setPreferredSize(new Dimension(Game.WIDTH, Game.HEIGHT));
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -46,6 +45,7 @@ public class GamePanel extends JPanel {
                     default:
                         break;
                 }
+                handleInputs();
             }
 
             @Override
@@ -70,6 +70,7 @@ public class GamePanel extends JPanel {
                     default:
                         break;
                 }
+                handleInputs();
             }
 
         });

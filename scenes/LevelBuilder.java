@@ -2,6 +2,7 @@ package scenes;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import components.Collider;
 import entities.Tile;
@@ -9,11 +10,10 @@ import main.Game;
 
 public class LevelBuilder {
     public static Tile[][] generateMap(BufferedImage levelData, BufferedImage levelAtlas, int atlasWidth,
-            int atlasHeight, int blankTile)
+            int atlasHeight, int[] blankTiles)
             throws IndexOutOfBoundsException {
         int atlasSize = atlasWidth * atlasHeight;
         Tile[][] tileMap = new Tile[Game.HEIGHT_IN_TILES][Game.WIDTH_IN_TILES];
-        // int[][] map = new int[Game.HEIGHT_IN_TILES][Game.WIDTH_IN_TILES];
         for (int y = 0; y < levelData.getHeight(); y++) {
             for (int x = 0; x < levelData.getWidth(); x++) {
                 int value = new Color(levelData.getRGB(x, y)).getRed();
@@ -30,8 +30,10 @@ public class LevelBuilder {
                             tileSprite,
                             globalX, globalY,
                             Game.TILE_SIZE, Game.TILE_SIZE);
-                    if (value == blankTile) {
-                        tileMap[y][x].getCollider().setActive(false);
+                    for (int blankTile : blankTiles) {
+                        if (value == blankTile) {
+                            tileMap[y][x].getCollider().setActive(false);
+                        }
                     }
                 }
             }

@@ -33,7 +33,7 @@ public class Level1 implements Renderable, Updateable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int blankTile = 11;
+        int[] blankTile = { 11 };
         map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT, blankTile);
         scene.addToScene(player);
         for (int y = 0; y < map.length; y++) {

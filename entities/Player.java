@@ -3,6 +3,7 @@ package entities;
 import components.Animation;
 import components.Collider;
 import components.PhysicsController;
+import main.Game;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -20,10 +21,12 @@ public class Player implements Renderable, Updateable {
     private Animation currentAnimation;
     private PhysicsController physicsController;
     private Collider collider;
+    private float xColliderOffset = 28 * Game.TILE_SCALE, yColliderOffset = 5 * Game.TILE_SCALE;
+    private float xColliderWidth = 28 * Game.TILE_SCALE, yColliderHeight = 38 * Game.TILE_SCALE;
 
     public Player(float x, float y, float speed, float width, float height) {
         physicsController = new PhysicsController(x, y, speed, width, height);
-        collider = new Collider((int) x, (int) y, (int) width, (int) height);
+        collider = new Collider(x + xColliderOffset, y + yColliderOffset, xColliderWidth, yColliderHeight);
         idleAnimation = new Animation(PLAYER_ATLAS, ANIMATION_SPEED, SPRITE_WIDTH, SPRITE_HEIGHT,
                 new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 } });
         runAnimation = new Animation(PLAYER_ATLAS, ANIMATION_SPEED, SPRITE_WIDTH, SPRITE_HEIGHT,
@@ -47,11 +50,12 @@ public class Player implements Renderable, Updateable {
     @Override
     public void update() {
         Vector2D testPosition = physicsController.testUpdate();
-        collider.moveHitBox((int) testPosition.getX(), (int) testPosition.getY());
+        collider.moveHitBox((int) testPosition.getX(), (int) testPosition.getY(), xColliderOffset, yColliderOffset);
         if (!collider.checkCollision()) {
             physicsController.update();
         } else {
-            collider.moveHitBox((int) physicsController.getX(), (int) physicsController.getY());
+            collider.moveHitBox((int) physicsController.getX(),
+                    (int) physicsController.getY(), xColliderOffset, yColliderOffset);
         }
     }
 

@@ -106,7 +106,8 @@ public class GamePanel extends JPanel {
     }
 
     public void handleInputs() {
-        game.gameObjects.player.setMovementDirection(0, 0);
+        game.gameObjects.player.getPhysicsController()
+                .setMovementDirection(0, 0);
         int playerXDirection = 0, playerYDirection = 0;
         if (key_w) {
             playerYDirection--;
@@ -120,7 +121,8 @@ public class GamePanel extends JPanel {
         if (key_d) {
             playerXDirection++;
         }
-        game.gameObjects.player.setMovementDirection(playerXDirection, playerYDirection);
+        game.gameObjects.player.getPhysicsController()
+                .setMovementDirection(playerXDirection, playerYDirection);
     }
 
     public void paintComponent(Graphics g) {

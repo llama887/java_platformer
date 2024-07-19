@@ -1,12 +1,12 @@
-package entities;
+package components;
 
 import utils.Vector2D;
 
-public abstract class Entity {
-    protected double x, y, speed, width, height;
-    protected Vector2D movementDirection, velocity, acceleration;
+public class PhysicsController {
+    private double x, y, speed, width, height;
+    private Vector2D movementDirection, velocity, acceleration;
 
-    public Entity(double x, double y, double speed, double width, double height) {
+    public PhysicsController(double x, double y, double speed, double width, double height) {
         this.x = x;
         this.y = y;
         this.speed = speed;
@@ -17,9 +17,16 @@ public abstract class Entity {
         this.acceleration = new Vector2D();
     }
 
-    public void update() {
+    public Vector2D update() {
+        if (acceleration.magnitude() != 0) {
+            velocity.add(acceleration);
+        }
+        if (velocity.magnitude() != 0) {
+            movementDirection.set(velocity, true);
+        }
         x += movementDirection.getX() * speed;
         y += movementDirection.getY() * speed;
+        return new Vector2D(x, y);
     }
 
     public double getX() {
@@ -90,10 +97,4 @@ public abstract class Entity {
         this.movementDirection.set(x, y, true);
     }
 
-    @Override
-    public String toString() {
-        return "Entity{" + "x=" + x + ", y=" + y + ", speed=" + speed + ", width=" + width + ", height=" + height
-                + ", velocity=(" + velocity.getX() + ", " + velocity.getY() + "), acceleration=()" + acceleration.getX()
-                + ", " + acceleration.getY() + ")}";
-    }
 }

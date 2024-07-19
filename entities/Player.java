@@ -7,9 +7,10 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import utils.Renderable;
+import utils.Updateable;
 import utils.Vector2D;
 
-public class Player implements Renderable {
+public class Player implements Renderable, Updateable {
         private final int SPRITE_WIDTH = 64, SPRITE_HEIGHT = 40, ANIMATION_SPEED = 30;
         private final String PLAYER_ATLAS = "assets/player_sprites.png";
         private Animation idleAnimation, runAnimation, jumpAnimation, fallingAnimation, groundAnimation, hitAnimation,
@@ -40,6 +41,7 @@ public class Player implements Renderable {
                                 new int[][] { { 0, 8 }, { 1, 8 }, { 2, 8 } });
         }
 
+        @Override
         public void update() {
                 physicsController.update();
         }

@@ -20,7 +20,6 @@ public class Player implements Renderable, Updateable {
     private Animation currentAnimation;
     private PhysicsController physicsController;
     private Collider collider;
-    private int[][] map;
 
     public Player(float x, float y, float speed, float width, float height) {
         physicsController = new PhysicsController(x, y, speed, width, height);
@@ -47,9 +46,13 @@ public class Player implements Renderable, Updateable {
 
     @Override
     public void update() {
-
-        physicsController.update();
-        collider.moveHitBox((int) physicsController.getX(), (int) physicsController.getY());
+        Vector2D testPosition = physicsController.testUpdate();
+        collider.moveHitBox((int) testPosition.getX(), (int) testPosition.getY());
+        if (!collider.checkCollision()) {
+            physicsController.update();
+        } else {
+            collider.moveHitBox((int) physicsController.getX(), (int) physicsController.getY());
+        }
     }
 
     @Override
@@ -87,9 +90,4 @@ public class Player implements Renderable, Updateable {
     public Collider getCollider() {
         return collider;
     }
-
-    public void setMap(int[][] map) {
-        this.map = map;
-    }
-
 }

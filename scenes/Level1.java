@@ -17,7 +17,7 @@ public class Level1 implements Renderable, Updateable {
     private Scene scene = new Scene();
     private BufferedImage levelData = null;
     private Tile[][] map;
-    private Player player = new Player(100, 100, 0.75f, 2 * 64, 2 * 40);
+    private Player player = new Player(100, 200, 0.75f, 2 * 64, 2 * 40);
 
     public Level1() {
         BufferedImage levelAtlas = null;
@@ -33,8 +33,14 @@ public class Level1 implements Renderable, Updateable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT);
+        int blankTile = 11;
+        map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT, blankTile);
         scene.addToScene(player);
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[y].length; x++) {
+                player.getCollider().addOtherCollider(map[y][x].getCollider());
+            }
+        }
     }
 
     @Override

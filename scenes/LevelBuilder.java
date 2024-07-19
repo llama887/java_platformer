@@ -9,7 +9,7 @@ import main.Game;
 
 public class LevelBuilder {
     public static Tile[][] generateMap(BufferedImage levelData, BufferedImage levelAtlas, int atlasWidth,
-            int atlasHeight)
+            int atlasHeight, int blankTile)
             throws IndexOutOfBoundsException {
         int atlasSize = atlasWidth * atlasHeight;
         Tile[][] tileMap = new Tile[Game.HEIGHT_IN_TILES][Game.WIDTH_IN_TILES];
@@ -30,6 +30,9 @@ public class LevelBuilder {
                             tileSprite,
                             globalX, globalY,
                             Game.TILE_SIZE, Game.TILE_SIZE);
+                    if (value == blankTile) {
+                        tileMap[y][x].getCollider().setActive(false);
+                    }
                 }
             }
         }

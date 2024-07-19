@@ -16,6 +16,12 @@ public class Vector2D {
         this.y = y;
     }
 
+    public Vector2D(Vector2D other) {
+        this.x = other.x;
+        this.y = other.y;
+        this.normal = other.normal;
+    }
+
     public Vector2D() {
         this.x = 0;
         this.y = 0;
@@ -51,9 +57,14 @@ public class Vector2D {
         normalize();
     }
 
+    public boolean getNormal() {
+        return normal;
+    }
+
     public void set(Vector2D other) {
         this.x = other.x;
         this.y = other.y;
+        this.normal = other.normal;
         normalize();
     }
 

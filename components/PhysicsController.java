@@ -29,6 +29,20 @@ public class PhysicsController {
         return new Vector2D(x, y);
     }
 
+    public Vector2D testUpdate() {
+        Vector2D tempVelocity = new Vector2D(velocity);
+        if (acceleration.magnitude() != 0) {
+            tempVelocity.add(acceleration);
+        }
+        Vector2D tempMovementDirection = new Vector2D(movementDirection);
+        if (tempVelocity.magnitude() != 0) {
+            tempMovementDirection.set(tempVelocity, true);
+        }
+        float tempX = x + tempMovementDirection.getX() * speed;
+        float tempY = y + tempMovementDirection.getY() * speed;
+        return new Vector2D(tempX, tempY);
+    }
+
     public float getX() {
         return x;
     }

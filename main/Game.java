@@ -3,6 +3,7 @@ package main;
 import java.awt.Graphics;
 
 import entities.Player;
+import scenes.Level1;
 
 public class Game implements Runnable {
     private GameWindow gameWindow;
@@ -11,11 +12,15 @@ public class Game implements Runnable {
     private final int FPS = 120;
     private final int UPS = 200;
 
-    public class GameObjects {
-        public Player player;
-    }
+    public final static int TILE_SIZE_DEFAULT = 32;
+    public final static float TILE_SCALE = 1.5f;
+    public final static int TILE_SIZE = (int) (TILE_SIZE_DEFAULT * TILE_SCALE);
+    public final static int WIDTH_IN_TILES = 26;
+    public final static int HEIGHT_IN_TILES = 14;
+    public final static int GAME_WIDTH = WIDTH_IN_TILES * TILE_SIZE;
+    public final static int GAME_HEIGHT = HEIGHT_IN_TILES * TILE_SIZE;
 
-    public GameObjects gameObjects = new GameObjects();
+    public Level1 level1 = new Level1();
 
     public Game() {
         initialize();
@@ -28,15 +33,14 @@ public class Game implements Runnable {
     }
 
     public void initialize() {
-        gameObjects.player = new Player(100, 100, 1, 128, 80);
     }
 
     public void update() {
-        gameObjects.player.update();
+        level1.update();
     }
 
     public void render(Graphics g) {
-        gameObjects.player.render(g);
+        level1.render(g);
     }
 
     @Override
@@ -65,6 +69,5 @@ public class Game implements Runnable {
     }
 
     public void windowFocusLost() {
-        gameObjects.player.setMovementDirection(0, 0);
     }
 }

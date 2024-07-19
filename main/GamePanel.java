@@ -17,7 +17,7 @@ public class GamePanel extends JPanel {
     public GamePanel(Game game) {
         this.game = game;
         // set game panel size
-        setPreferredSize(new Dimension(1280, 800));
+        setPreferredSize(new Dimension(Game.GAME_WIDTH, Game.GAME_HEIGHT));
         // handle inputs
         addKeyListener(new KeyListener() {
             @Override
@@ -106,7 +106,7 @@ public class GamePanel extends JPanel {
     }
 
     public void handleInputs() {
-        game.gameObjects.player.getPhysicsController()
+        game.level1.getPlayer().getPhysicsController()
                 .setMovementDirection(0, 0);
         int playerXDirection = 0, playerYDirection = 0;
         if (key_w) {
@@ -121,7 +121,7 @@ public class GamePanel extends JPanel {
         if (key_d) {
             playerXDirection++;
         }
-        game.gameObjects.player.getPhysicsController()
+        game.level1.getPlayer().getPhysicsController()
                 .setMovementDirection(playerXDirection, playerYDirection);
     }
 

@@ -3,21 +3,36 @@ package scenes;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
+import components.Collider;
+import entities.Tile;
 import main.Game;
 
 public class LevelBuilder {
-    public static int[][] generateMap(BufferedImage levelData, int atlasSize) throws IndexOutOfBoundsException {
-        int[][] map = new int[Game.HEIGHT_IN_TILES][Game.WIDTH_IN_TILES];
+    public static Tile[][] generateMap(BufferedImage levelData, BufferedImage levelAtlas, int atlasWidth,
+            int atlasHeight)
+            throws IndexOutOfBoundsException {
+        int atlasSize = atlasWidth * atlasHeight;
+        Tile[][] tileMap = new Tile[Game.HEIGHT_IN_TILES][Game.WIDTH_IN_TILES];
+        // int[][] map = new int[Game.HEIGHT_IN_TILES][Game.WIDTH_IN_TILES];
         for (int y = 0; y < levelData.getHeight(); y++) {
             for (int x = 0; x < levelData.getWidth(); x++) {
                 int value = new Color(levelData.getRGB(x, y)).getRed();
                 if (value >= atlasSize) {
                     throw new IndexOutOfBoundsException("Tile value greater than the atlas size");
                 } else {
-                    map[y][x] = value;
+                    int atlasXIndex = value % atlasWidth;
+                    int atlasYIndex = value / atlasWidth;
+                    int globalX = x * Game.TILE_SIZE;
+                    int globalY = y * Game.TILE_SIZE;
+                    BufferedImage tileSprite = levelAtlas.getSubimage(atlasXIndex * Game.TILE_SIZE_DEFAULT,
+                            atlasYIndex * Game.TILE_SIZE_DEFAULT, Game.TILE_SIZE_DEFAULT, Game.TILE_SIZE_DEFAULT);
+                    tileMap[y][x] = new Tile(
+                            tileSprite,
+                            globalX, globalY,
+                            Game.TILE_SIZE, Game.TILE_SIZE);
                 }
             }
         }
-        return map;
+        return tileMap;
     }
 }

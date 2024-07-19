@@ -7,7 +7,7 @@ public class GameWindow {
 
     public GameWindow(GamePanel gamePanel) {
         jframe = new JFrame();
-        jframe.setTitle("Shooting Blind");
+        jframe.setTitle("Template");
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.add(gamePanel);
         jframe.setResizable(false);

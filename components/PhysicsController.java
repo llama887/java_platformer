@@ -3,10 +3,10 @@ package components;
 import utils.Vector2D;
 
 public class PhysicsController {
-    private double x, y, speed, width, height;
+    private float x, y, speed, width, height;
     private Vector2D movementDirection, velocity, acceleration;
 
-    public PhysicsController(double x, double y, double speed, double width, double height) {
+    public PhysicsController(float x, float y, float speed, float width, float height) {
         this.x = x;
         this.y = y;
         this.speed = speed;
@@ -29,43 +29,43 @@ public class PhysicsController {
         return new Vector2D(x, y);
     }
 
-    public double getX() {
+    public float getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public double getY() {
+    public float getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(float y) {
         this.y = y;
     }
 
-    public double getSpeed() {
+    public float getSpeed() {
         return speed;
     }
 
-    public void setSpeed(double speed) {
+    public void setSpeed(float speed) {
         this.speed = speed;
     }
 
-    public double getWidth() {
+    public float getWidth() {
         return width;
     }
 
-    public void setWidth(double width) {
+    public void setWidth(float width) {
         this.width = width;
     }
 
-    public double getHeight() {
+    public float getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(float height) {
         this.height = height;
     }
 

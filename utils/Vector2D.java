@@ -1,17 +1,17 @@
 package utils;
 
 public class Vector2D {
-    private double x;
-    private double y;
+    private float x;
+    private float y;
     private boolean normal = false;
 
-    public Vector2D(double x, double y, boolean normal) {
+    public Vector2D(float x, float y, boolean normal) {
         this.x = x;
         this.y = y;
         this.normal = normal;
     }
 
-    public Vector2D(double x, double y) {
+    public Vector2D(float x, float y) {
         this.x = x;
         this.y = y;
     }
@@ -23,7 +23,7 @@ public class Vector2D {
 
     public boolean normalize() {
         if (normal) {
-            double magnitude = magnitude();
+            float magnitude = magnitude();
             if (magnitude == 0) {
                 return false;
             }
@@ -33,20 +33,20 @@ public class Vector2D {
         return normal;
     }
 
-    public double getX() {
+    public float getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(float x) {
         this.x = x;
         normalize();
     }
 
-    public double getY() {
+    public float getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(float y) {
         this.y = y;
         normalize();
     }
@@ -57,13 +57,13 @@ public class Vector2D {
         normalize();
     }
 
-    public void set(double x, double y) {
+    public void set(float x, float y) {
         this.x = x;
         this.y = y;
         normalize();
     }
 
-    public void set(double x, double y, boolean normal) {
+    public void set(float x, float y, boolean normal) {
         this.x = x;
         this.y = y;
         this.normal = normal;
@@ -85,12 +85,12 @@ public class Vector2D {
         return new Vector2D(this.x - other.x, this.y - other.y);
     }
 
-    public double dotProduct(Vector2D other) {
+    public float dotProduct(Vector2D other) {
         return this.x * other.x + this.y * other.y;
     }
 
-    public double magnitude() {
-        return Math.sqrt(x * x + y * y);
+    public float magnitude() {
+        return (float) Math.sqrt(x * x + y * y);
     }
 
     @Override

@@ -18,14 +18,21 @@ public class PhysicsController {
     }
 
     public Vector2D update() {
+        // System.out.println("PRE UPDATE: Acceleration: " + acceleration + " Velocity:
+        // " + velocity
+        // + " Movement Direction: " + movementDirection + " X: " + x + " Y: " + y);
+        velocity.setX(movementDirection.getX() * speed);
+        velocity.setY(movementDirection.getY() * speed);
         if (acceleration.magnitude() != 0) {
             velocity.add(acceleration);
         }
         if (velocity.magnitude() != 0) {
-            movementDirection.set(velocity, true);
+            x += velocity.getX() * speed;
+            y += velocity.getY() * speed;
         }
-        x += movementDirection.getX() * speed;
-        y += movementDirection.getY() * speed;
+        // System.out.println("POST UPDATE: Acceleration: " + acceleration + " Velocity:
+        // " + velocity
+        // + " Movement Direction: " + movementDirection + " X: " + x + " Y: " + y);
         return new Vector2D(x, y);
     }
 
@@ -35,11 +42,14 @@ public class PhysicsController {
             tempVelocity.add(acceleration);
         }
         Vector2D tempMovementDirection = new Vector2D(movementDirection);
+        float tempX = x;
+        float tempY = y;
         if (tempVelocity.magnitude() != 0) {
-            tempMovementDirection.set(tempVelocity, true);
+            tempX += velocity.getX() * speed;
+            tempY += velocity.getY() * speed;
         }
-        float tempX = x + tempMovementDirection.getX() * speed;
-        float tempY = y + tempMovementDirection.getY() * speed;
+        tempX += tempMovementDirection.getX() * speed;
+        tempY += tempMovementDirection.getY() * speed;
         return new Vector2D(tempX, tempY);
     }
 

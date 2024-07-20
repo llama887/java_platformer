@@ -26,6 +26,7 @@ public class Player implements Renderable, Updateable {
 
     public Player(float x, float y, float speed, float width, float height) {
         physicsController = new PhysicsController(x, y, speed, width, height);
+        physicsController.setAcceleration(new Vector2D(0, 1f));
         collider = new Collider(x + xColliderOffset, y + yColliderOffset, xColliderWidth, yColliderHeight);
         idleAnimation = new Animation(PLAYER_ATLAS, ANIMATION_SPEED, SPRITE_WIDTH, SPRITE_HEIGHT,
                 new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 } });
@@ -50,13 +51,16 @@ public class Player implements Renderable, Updateable {
     @Override
     public void update() {
         Vector2D testPosition = physicsController.testUpdate();
-        collider.moveHitBox((int) testPosition.getX(), (int) testPosition.getY(), xColliderOffset, yColliderOffset);
-        if (!collider.checkCollision()) {
-            physicsController.update();
-        } else {
-            collider.moveHitBox((int) physicsController.getX(),
-                    (int) physicsController.getY(), xColliderOffset, yColliderOffset);
+        collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
+        if (collider.checkCollision()) {
+            float yCorrection = collider.checkCollisionY();
+            collider.setY(collider.getY() + yCorrection);
+            float xCorrection = collider.checkCollisionX();
+            collider.setX(collider.getX() + xCorrection);
+            physicsController.setX(physicsController.getX() + xCorrection);
+            physicsController.setY(physicsController.getY() + yCorrection);
         }
+        physicsController.update();
     }
 
     @Override

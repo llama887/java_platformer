@@ -89,6 +89,8 @@ public class Vector2D {
     }
 
     public Vector2D add(Vector2D other) {
+        this.x += other.x;
+        this.y += other.y;
         return new Vector2D(this.x + other.x, this.y + other.y);
     }
 

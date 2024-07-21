@@ -4,9 +4,11 @@ import components.Animation;
 import components.Collider;
 import components.PhysicsController;
 import main.Game;
+import scenes.Level1;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Vector;
 
 import utils.Renderable;
 import utils.Updateable;
@@ -21,13 +23,21 @@ public class Player implements Renderable, Updateable {
     private Animation currentAnimation;
     private PhysicsController physicsController;
     private Collider collider;
+    private Collider groundCollider;
     private float xColliderOffset = 28 * Game.TILE_SCALE, yColliderOffset = 5 * Game.TILE_SCALE;
-    private float xColliderWidth = 28 * Game.TILE_SCALE, yColliderHeight = 38 * Game.TILE_SCALE;
+    private float xColliderWidth = 28 * Game.TILE_SCALE, yColliderHeight = 37 * Game.TILE_SCALE;
+
+    private boolean jump = false, isGrounded = false;
+    private final float jumpForce = -25f * Game.TILE_SCALE;
 
     public Player(float x, float y, float speed, float width, float height) {
         physicsController = new PhysicsController(x, y, speed, width, height);
-        physicsController.setAcceleration(new Vector2D(0, 1f));
+        physicsController.setAcceleration(new Vector2D(0, Level1.GRAVITY));
         collider = new Collider(x + xColliderOffset, y + yColliderOffset, xColliderWidth, yColliderHeight);
+        groundCollider = new Collider(collider.getX() + collider.getHitBox().width / 2,
+                collider.getY() + collider.getHitBox().height + 1,
+                1,
+                1);
         idleAnimation = new Animation(PLAYER_ATLAS, ANIMATION_SPEED, SPRITE_WIDTH, SPRITE_HEIGHT,
                 new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 } });
         runAnimation = new Animation(PLAYER_ATLAS, ANIMATION_SPEED, SPRITE_WIDTH, SPRITE_HEIGHT,
@@ -50,17 +60,28 @@ public class Player implements Renderable, Updateable {
 
     @Override
     public void update() {
-        Vector2D testPosition = physicsController.testUpdate();
-        collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
-        if (collider.checkCollision()) {
-            float yCorrection = collider.checkCollisionY();
-            collider.setY(collider.getY() + yCorrection);
-            float xCorrection = collider.checkCollisionX();
-            collider.setX(collider.getX() + xCorrection);
-            physicsController.setX(physicsController.getX() + xCorrection);
-            physicsController.setY(physicsController.getY() + yCorrection);
+        physicsController.unblockAllMovement();
+        if (jump && isGrounded) {
+            physicsController.setAcceleration(physicsController.getAcceleration().add(new Vector2D(0, jumpForce)));
+            jump = false;
+        } else {
+            physicsController.setAcceleration(new Vector2D(physicsController.getAcceleration().getX(), Level1.GRAVITY));
+            jump = false;
         }
-        physicsController.update();
+        Vector2D testPosition = physicsController.testYUpdate();
+        collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
+        if (!collider.checkCollision()) {
+            physicsController.yUpdate();
+        }
+        testPosition = physicsController.testXUpdate();
+        collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
+        if (!collider.checkCollision()) {
+            physicsController.xUpdate();
+        }
+        isGrounded = groundCollider.checkCollision();
+        collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset, yColliderOffset);
+        groundCollider.moveHitBox(collider.getX() + collider.getHitBox().width / 2,
+                collider.getY() + collider.getHitBox().height);
     }
 
     @Override
@@ -88,6 +109,7 @@ public class Player implements Renderable, Updateable {
                 (int) physicsController.getHeight(),
                 null);
         collider.drawHitBox(g);
+        groundCollider.drawHitBox(g);
         return currentAnimation.getFrame();
     }
 
@@ -97,5 +119,17 @@ public class Player implements Renderable, Updateable {
 
     public Collider getCollider() {
         return collider;
+    }
+
+    public void setJump(boolean jump) {
+        this.jump = jump;
+    }
+
+    public boolean isJumping() {
+        return jump;
+    }
+
+    public Collider getGroundCollider() {
+        return groundCollider;
     }
 }

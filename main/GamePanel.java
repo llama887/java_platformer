@@ -43,6 +43,9 @@ public class GamePanel extends JPanel {
                     case KeyEvent.VK_D:
                         key_d = true;
                         break;
+                    case KeyEvent.VK_SPACE:
+                        key_space = true;
+                        break;
                     default:
                         break;
                 }
@@ -66,6 +69,9 @@ public class GamePanel extends JPanel {
                     case KeyEvent.VK_RIGHT:
                     case KeyEvent.VK_D:
                         key_d = false;
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        key_space = false;
                         break;
                     default:
                         break;
@@ -120,6 +126,9 @@ public class GamePanel extends JPanel {
         }
         if (key_d) {
             playerXDirection++;
+        }
+        if (key_space) {
+            game.level1.getPlayer().setJump(true);
         }
         game.level1.getPlayer().getPhysicsController()
                 .setMovementDirection(playerXDirection, playerYDirection);

@@ -12,6 +12,7 @@ public class Collider {
     private Rectangle2D.Float hitBox;
     private ArrayList<Collider> otherColliders = new ArrayList<>();
     private boolean isActive = true;
+    private boolean collidingTop = false, collidingBottom = false, collidingLeft = false, collidingRight = false;
 
     /**
      * Constructs a Collider with the specified position and size.
@@ -106,31 +107,7 @@ public class Collider {
      * @return true if there is a collision, false otherwise
      */
     public boolean checkCollision(Collider other) {
-        // Get the hitboxes of both colliders
-        Rectangle2D.Float hitBox1 = this.getHitBox();
-        Rectangle2D.Float hitBox2 = other.getHitBox();
-
-        // Check if the other Collider is active
-        if (!other.isActive()) {
-            return false;
-        }
-
-        // Calculate the boundaries of the hitboxes
-        float x1Min = hitBox1.x;
-        float x1Max = hitBox1.x + hitBox1.width;
-        float y1Min = hitBox1.y;
-        float y1Max = hitBox1.y + hitBox1.height;
-
-        float x2Min = hitBox2.x;
-        float x2Max = hitBox2.x + hitBox2.width;
-        float y2Min = hitBox2.y;
-        float y2Max = hitBox2.y + hitBox2.height;
-
-        // Check for intersection excluding edges
-        boolean xOverlap = (x1Min < x2Max && x1Max > x2Min) && !(x1Max == x2Min || x1Min == x2Max);
-        boolean yOverlap = (y1Min < y2Max && y1Max > y2Min) && !(y1Max == y2Min || y1Min == y2Max);
-
-        return xOverlap && yOverlap;
+        return other.isActive() && hitBox.intersects(other.getHitBox());
     }
 
     /**
@@ -155,8 +132,22 @@ public class Collider {
     public float checkCollisionY() {
         for (Collider other : otherColliders) {
             if (checkCollision(other)) {
-                float yOverlap = hitBox.y + hitBox.height - other.getHitBox().y;
-                return -yOverlap;
+                boolean otherIsBelow = other.getHitBox().y > hitBox.y;
+                if (otherIsBelow) {
+                    float yOverlap = hitBox.y + hitBox.height - other.getHitBox().y;
+                    boolean collidingBottom = yOverlap > 0;
+                    if (collidingBottom) {
+                        return -yOverlap;
+                    }
+                }
+                boolean otherIsAbove = other.getHitBox().y < hitBox.y;
+                if (otherIsAbove) { // if other is above
+                    float yOverlap = other.getHitBox().y + other.getHitBox().height - hitBox.y;
+                    boolean collidingTop = yOverlap > 0;
+                    if (collidingTop) {
+                        return yOverlap;
+                    }
+                }
             }
         }
         return 0;
@@ -170,8 +161,22 @@ public class Collider {
     public float checkCollisionX() {
         for (Collider other : otherColliders) {
             if (checkCollision(other)) {
-                float xOverlap = hitBox.x + hitBox.width - other.getHitBox().x;
-                return xOverlap;
+                boolean otherIsRight = other.getHitBox().x > hitBox.x;
+                if (otherIsRight) { // if other is right
+                    float xOverlap = hitBox.x + hitBox.width - other.getHitBox().x;
+                    boolean collidingRight = xOverlap > 0;
+                    if (collidingRight) {
+                        return -xOverlap;
+                    }
+                }
+                boolean otherIsLeft = other.getHitBox().x < hitBox.x;
+                if (otherIsLeft) { // if other is left
+                    float xOverlap = other.getHitBox().x + other.getHitBox().width - hitBox.x;
+                    boolean collidingLeft = xOverlap > 0;
+                    if (collidingLeft) {
+                        return xOverlap;
+                    }
+                }
             }
         }
         return 0;
@@ -220,5 +225,36 @@ public class Collider {
      */
     public void setActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public void resetCollisions() {
+        collidingTop = false;
+        collidingBottom = false;
+        collidingLeft = false;
+        collidingRight = false;
+    }
+
+    public boolean isCollidingTop() {
+        return collidingTop;
+    }
+
+    public boolean isCollidingBottom() {
+        return collidingBottom;
+    }
+
+    public boolean isCollidingLeft() {
+        return collidingLeft;
+    }
+
+    public boolean isCollidingRight() {
+        return collidingRight;
+    }
+
+    @Override
+    public String toString() {
+        return "Collider{" +
+                "hitBox=" + hitBox +
+                ", isActive=" + isActive +
+                '}';
     }
 }

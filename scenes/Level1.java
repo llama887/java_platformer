@@ -14,6 +14,7 @@ import utils.Renderable;
 import utils.Updateable;
 
 public class Level1 implements Renderable, Updateable {
+    public static final float GRAVITY = 0.5f * Game.TILE_SCALE;
     private Scene scene = new Scene();
     private BufferedImage levelData = null;
     private Tile[][] map;
@@ -39,6 +40,7 @@ public class Level1 implements Renderable, Updateable {
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
                 player.getCollider().addOtherCollider(map[y][x].getCollider());
+                player.getGroundCollider().addOtherCollider(map[y][x].getCollider());
             }
         }
     }

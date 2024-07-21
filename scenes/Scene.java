@@ -12,8 +12,8 @@ import utils.Renderable;
 import utils.Updateable;
 
 public class Scene {
-    ArrayList<Renderable> renderables = new ArrayList<Renderable>();
-    ArrayList<Updateable> updateables = new ArrayList<Updateable>();
+    private ArrayList<Renderable> renderables = new ArrayList<Renderable>();
+    private ArrayList<Updateable> updateables = new ArrayList<Updateable>();
 
     public Scene() {
     }

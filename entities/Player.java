@@ -29,7 +29,7 @@ public class Player implements Renderable, Updateable {
     private float xGroundedColliderOffset = 28 * Game.TILE_SCALE, yGroundedColliderOffset = 5 * Game.TILE_SCALE;
 
     private boolean jump = false, isGrounded = false;
-    private final float jumpForce = -20f * Game.TILE_SCALE;
+    private final float jumpForce = -25f * Game.TILE_SCALE;
     private Vector2D lastMovementDirection = new Vector2D(0, 0);
 
     public Player(float x, float y, float speed, float width, float height) {
@@ -66,52 +66,39 @@ public class Player implements Renderable, Updateable {
         float initialY = physicsController.getY();
         physicsController.unblockAllMovement();
         if (jump && isGrounded) {
-            physicsController.setAcceleration(physicsController.getAcceleration().add(new Vector2D(0, jumpForce)));
+            physicsController.getAcceleration().add(new Vector2D(0, jumpForce));
             physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
             jump = false;
         } else {
-            physicsController.setAcceleration(new Vector2D(physicsController.getAcceleration().getX(), Level1.GRAVITY));
+            physicsController.getAcceleration().setY(Level1.GRAVITY);
             jump = false;
         }
         Vector2D testPosition = physicsController.testYUpdate();
         collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
-        float yPreUpdate = physicsController.getY();
-        float yPostUpdate = testPosition.getY();
-
         if (!collider.checkCollision()) {
             physicsController.yUpdate();
         } else {
             collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset, yColliderOffset);
-            Vector2D updateDirection = new Vector2D(0, yPostUpdate - yPreUpdate);
+            float deltaY = testPosition.getY() - physicsController.getY();
             try {
-                Vector2D distanceToNearestCollider = collider.distanceToNextCollider(updateDirection);
-                if (distanceToNearestCollider.magnitude() != 0) {
-                    System.out.println("Y Distance to nearest collider: " +
-                            distanceToNearestCollider.magnitude());
-                }
+                Vector2D distanceToNearestCollider = collider.distanceToNextCollider(new Vector2D(0, deltaY));
                 physicsController.setY(physicsController.getY() +
                         distanceToNearestCollider.getY());
                 collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
                         yColliderOffset);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         testPosition = physicsController.testXUpdate();
         collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
-        float xPreUpdate = physicsController.getX();
-        float xPostUpdate = testPosition.getX();
         if (!collider.checkCollision()) {
             physicsController.xUpdate();
         } else {
+            float deltaX = testPosition.getX() - physicsController.getX();
             collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset, yColliderOffset);
-            Vector2D updateDirection = new Vector2D(xPostUpdate - xPreUpdate, 0);
             try {
-                Vector2D distanceToNearestCollider = collider.distanceToNextCollider(updateDirection);
-                if (distanceToNearestCollider.magnitude() != 0) {
-                    System.out.println("X Distance to nearest collider: " + distanceToNearestCollider.magnitude());
-                }
+                Vector2D distanceToNearestCollider = collider.distanceToNextCollider(new Vector2D(deltaX, 0));
                 physicsController.setX(physicsController.getX() +
                         distanceToNearestCollider.getX());
                 collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,

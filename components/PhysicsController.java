@@ -51,9 +51,7 @@ public class PhysicsController {
 
     public Vector2D yUpdate() {
         velocity.setY(movementDirection.getY() * speed);
-        if (acceleration.magnitude() != 0) {
-            velocity.add(acceleration);
-        }
+        velocity.setY(velocity.getY() + acceleration.getY());
         if (velocity.magnitude() != 0) {
             float yMove = velocity.getY() * speed;
             if (yMove > 0) {
@@ -71,9 +69,7 @@ public class PhysicsController {
 
     public Vector2D xUpdate() {
         velocity.setX(movementDirection.getX() * speed);
-        if (acceleration.magnitude() != 0) {
-            velocity.add(acceleration);
-        }
+        velocity.setX(velocity.getX() + acceleration.getX());
         if (velocity.magnitude() != 0) {
             float xMove = velocity.getX() * speed;
             if (xMove > 0) {

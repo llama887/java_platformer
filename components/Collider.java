@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -231,7 +229,6 @@ public class Collider {
         otherColliders.add(other);
         addColliderToMap(otherCollidersByX, other.getX(), other);
         addColliderToMap(otherCollidersByY, other.getY(), other);
-        System.out.println(otherColliders.size() + " " + otherCollidersByX.size() + " " + otherCollidersByY.size());
     }
 
     /**
@@ -345,36 +342,29 @@ public class Collider {
                         shortestDistance = (float) Math.min(shortestDistance,
                                 this.hitBox.getX() - other.getHitBox().getMaxX());
                     }
+                    break;
                 }
             }
         } else if (movementDirection.getY() > 0) { // Moving down
             for (Float key : otherCollidersByY.tailMap((float) this.hitBox.getMaxY(), true).keySet()) {
                 for (Collider other : otherCollidersByY.get(key)) {
-                    if (!other.isActive()) {
-                        continue;
-                    }
-                    // System.out.println("Hitbox: " + hitBox + "\nother: " + other.getHitBox());
                     if (other.isActive() && other.getY() >= this.hitBox.getMaxY()
                             && hitBox.getX() <= other.getHitBox().getMaxX()
                             && hitBox.getMaxX() >= other.getHitBox().getX()) {
-                        float temp = shortestDistance;
                         shortestDistance = (float) Math.min(shortestDistance, other.getY() - this.hitBox.getMaxY());
-                        if (temp != shortestDistance) {
-                            // System.out.println("\nShortest distance: " + shortestDistance + "\n");
-                        }
+                        break;
                     }
                 }
             }
-            // System.out.println("Shortest distance: " + shortestDistance);
-            // System.out.println("-------------------------");
         } else if (movementDirection.getY() < 0) { // Moving up
             for (Float key : otherCollidersByY.headMap(this.getY(), true).descendingKeySet()) {
                 for (Collider other : otherCollidersByY.get(key)) {
-                    if (other.isActive() && other.getY() + other.getHitBox().height <= this.hitBox.getY()
+                    if (other.isActive() && other.getHitBox().getMaxY() <= this.hitBox.getY()
                             && hitBox.getX() <= other.getHitBox().getMaxX()
                             && hitBox.getMaxX() >= other.getHitBox().getX()) {
                         shortestDistance = (float) Math.min(shortestDistance,
                                 this.hitBox.getY() - (other.getY() + other.getHitBox().height));
+                        break;
                     }
                 }
             }

@@ -24,20 +24,22 @@ public class Player implements Renderable, Updateable {
     private PhysicsController physicsController;
     private Collider collider;
     private Collider groundCollider;
-    private float xColliderOffset = 28 * Game.TILE_SCALE, yColliderOffset = 5 * Game.TILE_SCALE;
-    private float xColliderWidth = 28 * Game.TILE_SCALE, yColliderHeight = 37 * Game.TILE_SCALE;
+    private float xColliderOffset = 22 * Game.TILE_SCALE, yColliderOffset = 3 * Game.TILE_SCALE;
+    private float xColliderWidth = 18 * Game.TILE_SCALE, yColliderHeight = 28 * Game.TILE_SCALE;
+    private float xGroundedColliderOffset = 28 * Game.TILE_SCALE, yGroundedColliderOffset = 5 * Game.TILE_SCALE;
 
     private boolean jump = false, isGrounded = false;
-    private final float jumpForce = -25f * Game.TILE_SCALE;
+    private final float jumpForce = -20f * Game.TILE_SCALE;
+    private Vector2D lastMovementDirection = new Vector2D(0, 0);
 
     public Player(float x, float y, float speed, float width, float height) {
         physicsController = new PhysicsController(x, y, speed, width, height);
         physicsController.setAcceleration(new Vector2D(0, Level1.GRAVITY));
         collider = new Collider(x + xColliderOffset, y + yColliderOffset, xColliderWidth, yColliderHeight);
-        groundCollider = new Collider(collider.getX() + collider.getHitBox().width / 2,
-                collider.getY() + collider.getHitBox().height + 1,
-                1,
-                1);
+        xGroundedColliderOffset = collider.getHitBox().width / 2;
+        yGroundedColliderOffset = collider.getHitBox().height + 1;
+        groundCollider = new Collider(collider.getX() + xGroundedColliderOffset,
+                collider.getY() + yGroundedColliderOffset, 1, 1);
         idleAnimation = new Animation(PLAYER_ATLAS, ANIMATION_SPEED, SPRITE_WIDTH, SPRITE_HEIGHT,
                 new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 } });
         runAnimation = new Animation(PLAYER_ATLAS, ANIMATION_SPEED, SPRITE_WIDTH, SPRITE_HEIGHT,
@@ -60,9 +62,12 @@ public class Player implements Renderable, Updateable {
 
     @Override
     public void update() {
+        float initialX = physicsController.getX();
+        float initialY = physicsController.getY();
         physicsController.unblockAllMovement();
         if (jump && isGrounded) {
             physicsController.setAcceleration(physicsController.getAcceleration().add(new Vector2D(0, jumpForce)));
+            physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
             jump = false;
         } else {
             physicsController.setAcceleration(new Vector2D(physicsController.getAcceleration().getX(), Level1.GRAVITY));
@@ -70,30 +75,66 @@ public class Player implements Renderable, Updateable {
         }
         Vector2D testPosition = physicsController.testYUpdate();
         collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
+        float yPreUpdate = physicsController.getY();
+        float yPostUpdate = testPosition.getY();
+
         if (!collider.checkCollision()) {
             physicsController.yUpdate();
+        } else {
+            collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset, yColliderOffset);
+            Vector2D updateDirection = new Vector2D(0, yPostUpdate - yPreUpdate);
+            try {
+                Vector2D distanceToNearestCollider = collider.distanceToNextCollider(updateDirection);
+                if (distanceToNearestCollider.magnitude() != 0) {
+                    System.out.println("Y Distance to nearest collider: " +
+                            distanceToNearestCollider.magnitude());
+                }
+                physicsController.setY(physicsController.getY() +
+                        distanceToNearestCollider.getY());
+                collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
+                        yColliderOffset);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         testPosition = physicsController.testXUpdate();
         collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
+        float xPreUpdate = physicsController.getX();
+        float xPostUpdate = testPosition.getX();
         if (!collider.checkCollision()) {
             physicsController.xUpdate();
+        } else {
+            collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset, yColliderOffset);
+            Vector2D updateDirection = new Vector2D(xPostUpdate - xPreUpdate, 0);
+            try {
+                Vector2D distanceToNearestCollider = collider.distanceToNextCollider(updateDirection);
+                if (distanceToNearestCollider.magnitude() != 0) {
+                    System.out.println("X Distance to nearest collider: " + distanceToNearestCollider.magnitude());
+                }
+                physicsController.setX(physicsController.getX() +
+                        distanceToNearestCollider.getX());
+                collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
+                        yColliderOffset);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         isGrounded = groundCollider.checkCollision();
         collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset, yColliderOffset);
-        groundCollider.moveHitBox(collider.getX() + collider.getHitBox().width / 2,
-                collider.getY() + collider.getHitBox().height);
+        groundCollider.moveHitBox(collider.getX(), collider.getY(), xGroundedColliderOffset, yGroundedColliderOffset);
+        lastMovementDirection = new Vector2D(physicsController.getX() - initialX, physicsController.getY() - initialY);
     }
 
     @Override
     public BufferedImage render(Graphics g) {
-        Vector2D movementDirection = physicsController.getMovementDirection();
-        if (movementDirection.magnitude() == 0) {
+        if (lastMovementDirection.magnitude() == 0) {
             currentAnimation = idleAnimation;
-        } else if (Math.abs(movementDirection.getX()) > 0) {
+        } else if (Math.abs(lastMovementDirection.getX()) > 0) {
             currentAnimation = runAnimation;
-        } else if (movementDirection.getY() < 0) {
+        } else if (lastMovementDirection.getY() < 0) {
             currentAnimation = jumpAnimation;
-        } else if (movementDirection.getY() > 0) {
+        } else if (lastMovementDirection.getY() > 0) {
             currentAnimation = fallingAnimation;
         }
         if (currentAnimation.getAnimationTick() >= currentAnimation.getAnimationSpeed()) {

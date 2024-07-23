@@ -116,10 +116,10 @@ public class GamePanel extends JPanel {
                 .setMovementDirection(0, 0);
         int playerXDirection = 0, playerYDirection = 0;
         if (key_w) {
-            playerYDirection--;
+            // playerYDirection--;
         }
         if (key_s) {
-            playerYDirection++;
+            // playerYDirection++;
         }
         if (key_a) {
             playerXDirection--;

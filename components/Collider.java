@@ -4,6 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
+
+import utils.Vector2D;
 
 /**
  * The Collider class represents a hitbox used for collision detection.
@@ -11,6 +17,8 @@ import java.util.ArrayList;
 public class Collider {
     private Rectangle2D.Float hitBox;
     private ArrayList<Collider> otherColliders = new ArrayList<>();
+    private TreeMap<Float, List<Collider>> otherCollidersByX = new TreeMap<>();
+    private TreeMap<Float, List<Collider>> otherCollidersByY = new TreeMap<>();
     private boolean isActive = true;
     private boolean collidingTop = false, collidingBottom = false, collidingLeft = false, collidingRight = false;
 
@@ -26,6 +34,9 @@ public class Collider {
         this.hitBox = new Rectangle2D.Float(x, y, width, height);
     }
 
+    /**
+     * @return float
+     */
     public float getX() {
         return hitBox.x;
     }
@@ -107,7 +118,36 @@ public class Collider {
      * @return true if there is a collision, false otherwise
      */
     public boolean checkCollision(Collider other) {
-        return other.isActive() && hitBox.intersects(other.getHitBox());
+
+        if (!other.isActive()) {
+            return false;
+        }
+        // Get the hitboxes of both colliders
+        Rectangle2D.Float hitBox1 = this.getHitBox();
+        Rectangle2D.Float hitBox2 = other.getHitBox();
+
+        // Check if the other Collider is active
+        if (!other.isActive()) {
+            return false;
+        }
+
+        // Calculate the boundaries of the hitboxes
+        float x1Min = hitBox1.x;
+        float x1Max = hitBox1.x + hitBox1.width;
+        float y1Min = hitBox1.y;
+        float y1Max = hitBox1.y + hitBox1.height;
+
+        float x2Min = hitBox2.x;
+        float x2Max = hitBox2.x + hitBox2.width;
+        float y2Min = hitBox2.y;
+        float y2Max = hitBox2.y + hitBox2.height;
+
+        // Check for intersection excluding edges
+        boolean xOverlap = (x1Min < x2Max && x1Max > x2Min) && !(x1Max == x2Min || x1Min == x2Max);
+        boolean yOverlap = (y1Min < y2Max && y1Max > y2Min) && !(y1Max == y2Min || y1Min == y2Max);
+
+        return xOverlap && yOverlap;
+        // return other.isActive() && hitBox.intersects(other.getHitBox());
     }
 
     /**
@@ -189,6 +229,20 @@ public class Collider {
      */
     public void addOtherCollider(Collider other) {
         otherColliders.add(other);
+        addColliderToMap(otherCollidersByX, other.getX(), other);
+        addColliderToMap(otherCollidersByY, other.getY(), other);
+        System.out.println(otherColliders.size() + " " + otherCollidersByX.size() + " " + otherCollidersByY.size());
+    }
+
+    /**
+     * Adds a collider to the specified TreeMap.
+     *
+     * @param map   the TreeMap
+     * @param key   the key
+     * @param value the collider
+     */
+    private void addColliderToMap(TreeMap<Float, List<Collider>> map, float key, Collider value) {
+        map.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
     }
 
     /**
@@ -198,6 +252,12 @@ public class Collider {
      */
     public void setOtherColliders(ArrayList<Collider> otherColliders) {
         this.otherColliders = otherColliders;
+        otherCollidersByX.clear();
+        otherCollidersByY.clear();
+        for (Collider collider : otherColliders) {
+            addColliderToMap(otherCollidersByX, collider.getX(), collider);
+            addColliderToMap(otherCollidersByY, collider.getY(), collider);
+        }
     }
 
     /**
@@ -248,6 +308,86 @@ public class Collider {
 
     public boolean isCollidingRight() {
         return collidingRight;
+    }
+
+    /**
+     * Given a horizontal or vertical movement direction, returns the distance to
+     * the next collider in that direction.
+     * 
+     * @param movementDirection
+     * @return Vector2D
+     * @throws Exception
+     */
+    public Vector2D distanceToNextCollider(Vector2D movementDirection) throws Exception {
+        if (movementDirection.getX() * movementDirection.getY() != 0) {
+            throw new Exception(
+                    "distanceToNextCollider only accepts movement directions that are either horizontal or vertical");
+        }
+
+        float shortestDistance = Float.MAX_VALUE;
+
+        if (movementDirection.getX() > 0) { // Moving right
+            for (Float key : otherCollidersByX.tailMap((float) this.hitBox.getMaxX(), true).keySet()) {
+                for (Collider other : otherCollidersByX.get(key)) {
+                    if (other.isActive() && other.getX() >= this.hitBox.getMaxX()
+                            && hitBox.getY() >= other.getHitBox().getMaxY()
+                            && hitBox.getMaxY() <= other.getHitBox().getY()) {
+                        shortestDistance = (float) Math.min(shortestDistance, other.getX() - this.hitBox.getMaxX());
+                    }
+                }
+            }
+        } else if (movementDirection.getX() < 0) { // Moving left
+            for (Float key : otherCollidersByX.headMap(this.getX(), true).descendingKeySet()) {
+                for (Collider other : otherCollidersByX.get(key)) {
+                    if (other.isActive() && other.getHitBox().getMaxX() <= this.hitBox.getX()
+                            && hitBox.getY() >= other.getHitBox().getMaxY()
+                            && hitBox.getMaxY() <= other.getHitBox().getY()) {
+                        shortestDistance = (float) Math.min(shortestDistance,
+                                this.hitBox.getX() - other.getHitBox().getMaxX());
+                    }
+                }
+            }
+        } else if (movementDirection.getY() > 0) { // Moving down
+            for (Float key : otherCollidersByY.tailMap((float) this.hitBox.getMaxY(), true).keySet()) {
+                for (Collider other : otherCollidersByY.get(key)) {
+                    if (!other.isActive()) {
+                        continue;
+                    }
+                    // System.out.println("Hitbox: " + hitBox + "\nother: " + other.getHitBox());
+                    if (other.isActive() && other.getY() >= this.hitBox.getMaxY()
+                            && hitBox.getX() <= other.getHitBox().getMaxX()
+                            && hitBox.getMaxX() >= other.getHitBox().getX()) {
+                        float temp = shortestDistance;
+                        shortestDistance = (float) Math.min(shortestDistance, other.getY() - this.hitBox.getMaxY());
+                        if (temp != shortestDistance) {
+                            // System.out.println("\nShortest distance: " + shortestDistance + "\n");
+                        }
+                    }
+                }
+            }
+            // System.out.println("Shortest distance: " + shortestDistance);
+            // System.out.println("-------------------------");
+        } else if (movementDirection.getY() < 0) { // Moving up
+            for (Float key : otherCollidersByY.headMap(this.getY(), true).descendingKeySet()) {
+                for (Collider other : otherCollidersByY.get(key)) {
+                    if (other.isActive() && other.getY() + other.getHitBox().height <= this.hitBox.getY()
+                            && hitBox.getX() <= other.getHitBox().getMaxX()
+                            && hitBox.getMaxX() >= other.getHitBox().getX()) {
+                        shortestDistance = (float) Math.min(shortestDistance,
+                                this.hitBox.getY() - (other.getY() + other.getHitBox().height));
+                    }
+                }
+            }
+        }
+
+        if (shortestDistance == Float.MAX_VALUE) {
+            return new Vector2D(0, 0); // No colliders in the direction of movement
+        }
+
+        // Return the shortest distance in the direction of movement
+        return new Vector2D(
+                movementDirection.getX() == 0 ? 0 : shortestDistance * Math.signum(movementDirection.getX()),
+                movementDirection.getY() == 0 ? 0 : shortestDistance * Math.signum(movementDirection.getY()));
     }
 
     @Override

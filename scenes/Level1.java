@@ -14,11 +14,11 @@ import utils.Renderable;
 import utils.Updateable;
 
 public class Level1 implements Renderable, Updateable {
-    public static final float GRAVITY = 0.5f * Game.TILE_SCALE;
+    public static final float GRAVITY = 1f * Game.TILE_SCALE;
     private Scene scene = new Scene();
     private BufferedImage levelData = null;
     private Tile[][] map;
-    private Player player = new Player(100, 200, 0.75f, 2 * 64, 2 * 40);
+    private Player player = new Player(100, 200, 0.75f, Game.TILE_SCALE * 64, Game.TILE_SCALE * 40);
 
     public Level1() {
         BufferedImage levelAtlas = null;

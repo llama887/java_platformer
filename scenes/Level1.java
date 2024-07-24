@@ -14,7 +14,7 @@ import utils.Renderable;
 import utils.Updateable;
 
 public class Level1 implements Renderable, Updateable {
-    public static final float GRAVITY = 0.5f * Game.TILE_SCALE;
+    public static final float GRAVITY = 0.008f * Game.TILE_SCALE;
     private Scene scene = new Scene();
     private BufferedImage levelData = null;
     private Tile[][] map;

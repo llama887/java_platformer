@@ -8,7 +8,6 @@ import scenes.Level1;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.Vector;
 
 import utils.Renderable;
 import utils.Updateable;
@@ -29,7 +28,7 @@ public class Player implements Renderable, Updateable {
     private float xGroundedColliderOffset = 28 * Game.TILE_SCALE, yGroundedColliderOffset = 5 * Game.TILE_SCALE;
 
     private boolean jump = false, isGrounded = false;
-    private final float jumpForce = -25f * Game.TILE_SCALE;
+    private final float jumpForce = -0.28f * Game.TILE_SCALE;
     private Vector2D lastMovementDirection = new Vector2D(0, 0);
 
     public Player(float x, float y, float speed, float width, float height) {

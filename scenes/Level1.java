@@ -18,7 +18,7 @@ public class Level1 implements Renderable, Updateable {
     private Scene scene = new Scene();
     private BufferedImage levelData = null;
     private Tile[][] map;
-    private Player player = new Player(100, 200, 1.2f, Game.TILE_SCALE * 64, Game.TILE_SCALE * 40);
+    private Player player = new Player(100, 200, 1f, Game.TILE_SCALE * 64, Game.TILE_SCALE * 40);
 
     public Level1() {
         BufferedImage levelAtlas = null;

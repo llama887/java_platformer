@@ -66,6 +66,7 @@ public class Player implements Renderable, Updateable {
         physicsController.unblockAllMovement();
         if (jump && isGrounded) {
             physicsController.getAcceleration().add(new Vector2D(0, jumpForce));
+            // zero out accumulated velocity in the y direction
             physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
             jump = false;
         } else {
@@ -83,6 +84,9 @@ public class Player implements Renderable, Updateable {
                 Vector2D distanceToNearestCollider = collider.distanceToNextCollider(new Vector2D(0, deltaY));
                 physicsController.setY(physicsController.getY() +
                         distanceToNearestCollider.getY());
+                if (distanceToNearestCollider.getY() != 0) {
+                    physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
+                }
                 collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
                         yColliderOffset);
             } catch (Exception e) {
@@ -100,6 +104,9 @@ public class Player implements Renderable, Updateable {
                 Vector2D distanceToNearestCollider = collider.distanceToNextCollider(new Vector2D(deltaX, 0));
                 physicsController.setX(physicsController.getX() +
                         distanceToNearestCollider.getX());
+                if (distanceToNearestCollider.getX() != 0) {
+                    physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
+                }
                 collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
                         yColliderOffset);
             } catch (Exception e) {

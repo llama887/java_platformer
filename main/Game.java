@@ -2,7 +2,6 @@ package main;
 
 import java.awt.Graphics;
 
-import entities.Player;
 import scenes.GameState;
 import scenes.Level1;
 
@@ -21,11 +20,11 @@ public class Game implements Runnable {
     public final static int GAME_WIDTH = WIDTH_IN_TILES * TILE_SIZE;
     public final static int GAME_HEIGHT = HEIGHT_IN_TILES * TILE_SIZE;
 
-    public Level1 level1 = new Level1();
+    public Level1 level1;
 
     public Game() {
-        initialize();
         gamePanel = new GamePanel(this);
+        initialize();
         gameWindow = new GameWindow(gamePanel);
         gamePanel.setFocusable(true);
         gamePanel.requestFocus();
@@ -34,10 +33,12 @@ public class Game implements Runnable {
     }
 
     public void initialize() {
+        level1 = new Level1(gamePanel);
+        GameState.setState(GameState.MENU, gamePanel);
     }
 
     public void update() {
-        switch (GameState.state) {
+        switch (GameState.getState()) {
             case PLAYING:
                 level1.update();
                 break;
@@ -49,7 +50,7 @@ public class Game implements Runnable {
     }
 
     public void render(Graphics g) {
-        switch (GameState.state) {
+        switch (GameState.getState()) {
             case PLAYING:
                 level1.render(g);
                 break;
@@ -68,7 +69,7 @@ public class Game implements Runnable {
         double updateDelta = 0;
         double renderDelta = 0;
         while (true) {
-            level1.handleInputs();
+            level1.handleKeyInputs();
             long currentTime = System.nanoTime();
             long deltaTime = currentTime - previousTime;
             updateDelta += (deltaTime) / timePerUpdate;

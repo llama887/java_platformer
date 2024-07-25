@@ -123,12 +123,12 @@ public class Player implements Renderable, Updateable {
     public BufferedImage render(Graphics g) {
         if (lastMovementDirection.magnitude() == 0) {
             currentAnimation = idleAnimation;
-        } else if (Math.abs(lastMovementDirection.getX()) > 0) {
-            currentAnimation = runAnimation;
-        } else if (lastMovementDirection.getY() < 0) {
+        } else if (lastMovementDirection.getY() < 0 && !isGrounded) {
             currentAnimation = jumpAnimation;
         } else if (lastMovementDirection.getY() > 0) {
             currentAnimation = fallingAnimation;
+        } else if (Math.abs(lastMovementDirection.getX()) > 0) {
+            currentAnimation = runAnimation;
         }
         if (currentAnimation.getAnimationTick() >= currentAnimation.getAnimationSpeed()) {
             currentAnimation.nextFrame();

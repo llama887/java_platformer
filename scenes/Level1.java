@@ -8,7 +8,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
@@ -16,23 +15,21 @@ import components.SceneEntities;
 import entities.Player;
 import entities.Tile;
 import main.Game;
-import utils.InputHandler;
-import utils.Renderable;
-import utils.Updateable;
+import main.GamePanel;
+
 import java.awt.event.MouseEvent;
 
-public class Level1 implements Renderable, Updateable, InputHandler {
+public class Level1 extends Scene {
     public static final float GRAVITY = 0.028f * Game.TILE_SCALE;
-    private SceneEntities scene = new SceneEntities();
+    private SceneEntities sceneEntities = new SceneEntities();
     private BufferedImage levelData = null;
     private Tile[][] map;
     private Player player = new Player(100, 200, 1f, Game.TILE_SCALE * 64, Game.TILE_SCALE * 40);
-    private KeyListener keyListener;
-    private MouseListener mouseListener;
-    private MouseMotionListener mouseMotionListener;
     private boolean key_w, key_s, key_a, key_d, key_space, key_enter;
+    private GamePanel gamePanel;
 
-    public Level1() {
+    public Level1(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
         BufferedImage levelAtlas = null;
         final int ATLAS_WIDTH = 12;
         final int ATLAS_HEIGHT = 4;
@@ -46,13 +43,15 @@ public class Level1 implements Renderable, Updateable, InputHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int[] blankTile = { 11 };
+        int[] blankTile = { 11, 13 };
         map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT, blankTile);
-        scene.addToScene(player);
+        sceneEntities.addToScene(player);
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
-                player.getCollider().addOtherCollider(map[y][x].getCollider());
-                player.getGroundCollider().addOtherCollider(map[y][x].getCollider());
+                if (map[y][x].getCollider().isActive()) {
+                    player.getCollider().addOtherCollider(map[y][x].getCollider());
+                    player.getGroundCollider().addOtherCollider(map[y][x].getCollider());
+                }
             }
         }
         // create input handlers
@@ -157,7 +156,7 @@ public class Level1 implements Renderable, Updateable, InputHandler {
         };
     }
 
-    public void handleInputs() {
+    public void handleKeyInputs() {
         player.getPhysicsController()
                 .setMovementDirection(0, 0);
         int playerXDirection = 0, playerYDirection = 0;
@@ -177,7 +176,7 @@ public class Level1 implements Renderable, Updateable, InputHandler {
             player.setJump(true);
         }
         if (key_enter) {
-            GameState.state = GameState.PLAYING;
+            GameState.setState(GameState.PLAYING, gamePanel);
         }
         player.getPhysicsController()
                 .setMovementDirection(playerXDirection, playerYDirection);
@@ -190,17 +189,17 @@ public class Level1 implements Renderable, Updateable, InputHandler {
                 map[y][x].render(g);
             }
         }
-        scene.render(g);
+        sceneEntities.render(g);
         return levelData;
     }
 
     @Override
     public void update() {
-        scene.update();
+        sceneEntities.update();
     }
 
-    public SceneEntities getScene() {
-        return scene;
+    public SceneEntities getSceneEntities() {
+        return sceneEntities;
     }
 
     public Player getPlayer() {

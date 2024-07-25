@@ -3,6 +3,7 @@ package main;
 import java.awt.Graphics;
 
 import entities.Player;
+import scenes.GameState;
 import scenes.Level1;
 
 public class Game implements Runnable {
@@ -36,11 +37,27 @@ public class Game implements Runnable {
     }
 
     public void update() {
-        level1.update();
+        switch (GameState.state) {
+            case PLAYING:
+                level1.update();
+                break;
+            case MENU:
+                break;
+            default:
+                break;
+        }
     }
 
     public void render(Graphics g) {
-        level1.render(g);
+        switch (GameState.state) {
+            case PLAYING:
+                level1.render(g);
+                break;
+            case MENU:
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -51,7 +68,7 @@ public class Game implements Runnable {
         double updateDelta = 0;
         double renderDelta = 0;
         while (true) {
-            gamePanel.handleInputs();
+            level1.handleInputs();
             long currentTime = System.nanoTime();
             long deltaTime = currentTime - previousTime;
             updateDelta += (deltaTime) / timePerUpdate;

@@ -1,4 +1,4 @@
-package scenes;
+package components;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -11,12 +11,9 @@ import javax.imageio.ImageIO;
 import utils.Renderable;
 import utils.Updateable;
 
-public class Scene {
+public class SceneEntities {
     private ArrayList<Renderable> renderables = new ArrayList<Renderable>();
     private ArrayList<Updateable> updateables = new ArrayList<Updateable>();
-
-    public Scene() {
-    }
 
     public void addToScene(Object gameObject) {
         if (gameObject instanceof Renderable) {

@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import components.Animation;
 import components.Collider;
 import main.Game;
-import scenes.GameState;
+import scenes.Scene;
 import utils.Renderable;
 import utils.Updateable;
 
@@ -16,7 +16,7 @@ public class MenuButton implements Renderable, Updateable {
     private final int BUTTON_WIDTH = (int) (BUTTON_WIDTH_DEFAULT * Game.SCALE),
             BUTTON_HEIGHT = (int) (BUTTON_HEIGHT_DEFAULT * Game.SCALE);
     private int xPosition, yPosition;
-    private GameState nextState;
+    private Scene nextScene;
     private final String MENU_BUTTON_ATLAS = "assets/menu_button_atlas.png";
     private Collider collider;
     private float mouseX, mouseY;
@@ -28,10 +28,10 @@ public class MenuButton implements Renderable, Updateable {
 
     private ButtonState buttonState = ButtonState.NORMAL;
 
-    public MenuButton(int xPosition, int yPosition, GameState nextState, int atlasRow) {
+    public MenuButton(int xPosition, int yPosition, Scene nextScene, int atlasRow) {
         this.xPosition = xPosition;
         this.yPosition = yPosition;
-        this.nextState = nextState;
+        this.nextScene = nextScene;
         buttonStates = new Animation(MENU_BUTTON_ATLAS, 0, BUTTON_WIDTH_DEFAULT, BUTTON_HEIGHT_DEFAULT,
                 new int[][] { { 0, atlasRow }, { 1, atlasRow }, { 2, atlasRow } });
         collider = new Collider(xPosition, yPosition, BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -60,7 +60,6 @@ public class MenuButton implements Renderable, Updateable {
                 break;
         }
         g.drawImage(buttonStates.getFrame(), xPosition, yPosition, BUTTON_WIDTH, BUTTON_HEIGHT, null);
-        collider.drawHitBox(g);
         return buttonStates.getFrame();
     }
 
@@ -74,8 +73,8 @@ public class MenuButton implements Renderable, Updateable {
         return buttonState;
     }
 
-    public GameState getNexState() {
-        return nextState;
+    public Scene getNexState() {
+        return nextScene;
     }
 
     @Override

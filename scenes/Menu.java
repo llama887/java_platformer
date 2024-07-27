@@ -6,6 +6,11 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.Buffer;
+
+import javax.imageio.ImageIO;
 
 import components.SceneEntities;
 import main.Game;
@@ -19,18 +24,30 @@ public class Menu extends Scene {
     private MenuButton quitButton;
     private float mouseX, mouseY;
     private boolean mouseClicked;
+    private BufferedImage menuBackground;
+    private final String backgroundPath = "assets/menu_background.png";
+    private final int menuX, menuY, menuWidth, menuHeight;
 
     public Menu(GamePanel gamePanel) {
         super(gamePanel);
-        playButton = new MenuButton(0, (int) (150 * Game.SCALE), GameState.PLAYING, 0);
-        optionsButton = new MenuButton(0, (int) (220 * Game.SCALE), GameState.MENU, 1);
-        quitButton = new MenuButton(0, (int) (290 * Game.SCALE), GameState.MENU, 2);
+        playButton = new MenuButton(0, (int) (160 * Game.SCALE), Game.level1, 0);
+        optionsButton = new MenuButton(0, (int) (230 * Game.SCALE), Game.menu, 1);
+        quitButton = new MenuButton(0, (int) (300 * Game.SCALE), Game.menu, 2);
         playButton.centerX();
         optionsButton.centerX();
         quitButton.centerX();
         sceneEntities.addToScene(playButton);
         sceneEntities.addToScene(optionsButton);
         sceneEntities.addToScene(quitButton);
+        try {
+            menuBackground = ImageIO.read(new File(backgroundPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        menuWidth = (int) (menuBackground.getWidth() * Game.SCALE);
+        menuHeight = (int) (menuBackground.getHeight() * Game.SCALE);
+        menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
+        menuY = Game.GAME_HEIGHT / 2 - menuHeight / 2;
         keyListener = new KeyListener() {
             @Override
             public void keyTyped(java.awt.event.KeyEvent e) {
@@ -89,17 +106,14 @@ public class Menu extends Scene {
         quitButton.setMouseState(mouseX, mouseY, mouseClicked);
         sceneEntities.update();
         if (playButton.getButtonState() == ButtonState.CLICKED) {
-            GameState.setState(GameState.PLAYING, gamePanel);
-        } else if (optionsButton.getButtonState() == ButtonState.CLICKED) {
-            GameState.setState(GameState.OPTIONS, gamePanel);
-        } else if (quitButton.getButtonState() == ButtonState.CLICKED) {
-            GameState.setState(GameState.QUIT, gamePanel);
+            Game.changeScene(Game.level1, gamePanel);
         }
     }
 
     @Override
     public BufferedImage render(Graphics g) {
+        g.drawImage(menuBackground, menuX, menuY, menuWidth, menuHeight, null);
         sceneEntities.render(g);
-        return null;
+        return menuBackground;
     }
 }

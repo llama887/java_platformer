@@ -175,9 +175,6 @@ public class Level extends Scene {
         if (key_space) {
             player.setJump(true);
         }
-        if (key_enter) {
-            GameState.setState(GameState.PLAYING, gamePanel);
-        }
         player.getPhysicsController()
                 .setMovementDirection(playerXDirection, playerYDirection);
     }

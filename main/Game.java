@@ -1,10 +1,11 @@
 package main;
 
 import java.awt.Graphics;
-import scenes.Menu;
+import java.util.Optional;
 
+import scenes.Menu;
+import scenes.Scene;
 import entities.Player;
-import scenes.GameState;
 import scenes.Level;
 
 public class Game implements Runnable {
@@ -22,8 +23,9 @@ public class Game implements Runnable {
     public final static int GAME_WIDTH = WIDTH_IN_TILES * TILE_SIZE;
     public final static int GAME_HEIGHT = HEIGHT_IN_TILES * TILE_SIZE;
 
-    public Menu menu;
-    public Level level1;
+    public static Menu menu;
+    public static Level level1;
+    public static Optional<Scene> currentScene = Optional.empty();
 
     public Game() {
         gamePanel = new GamePanel(this);
@@ -40,33 +42,27 @@ public class Game implements Runnable {
         Player player = new Player(100, 200, 1.1f, Game.SCALE * 64, Game.SCALE * 40);
         level1 = new Level(player, 0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data.png",
                 gamePanel);
-        GameState.setState(GameState.MENU, gamePanel);
+        Game.changeScene(menu, gamePanel);
     }
 
     public void update() {
-        switch (GameState.getState()) {
-            case PLAYING:
-                level1.update();
-                break;
-            case MENU:
-                menu.update();
-                break;
-            default:
-                break;
-        }
+        currentScene.get().update();
     }
 
     public void render(Graphics g) {
-        switch (GameState.getState()) {
-            case PLAYING:
-                level1.render(g);
-                break;
-            case MENU:
-                menu.render(g);
-                break;
-            default:
-                break;
+        currentScene.get().render(g);
+    }
+
+    public static void changeScene(Scene newScene, GamePanel gamePanel) {
+        if (currentScene.isEmpty() || currentScene.get() != newScene) {
+            Scene previousScene = currentScene.orElse(menu);
+            currentScene = Optional.of(newScene);
+            gamePanel.updateInputHandler(previousScene, newScene);
         }
+    }
+
+    public Scene getCurrentScene() {
+        return currentScene.get();
     }
 
     @Override
@@ -95,4 +91,9 @@ public class Game implements Runnable {
 
     public void windowFocusLost() {
     }
+
+    public Level getLevel1() {
+        return level1;
+    }
+
 }

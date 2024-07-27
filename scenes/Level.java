@@ -19,27 +19,27 @@ import main.GamePanel;
 
 import java.awt.event.MouseEvent;
 
-public class Level1 extends Scene {
-    public static final float GRAVITY = 0.028f * Game.TILE_SCALE;
-    private SceneEntities sceneEntities = new SceneEntities();
+public class Level extends Scene {
+    public static float GRAVITY;
     private BufferedImage levelData = null;
     private Tile[][] map;
-    private Player player = new Player(100, 200, 1f, Game.TILE_SCALE * 64, Game.TILE_SCALE * 40);
+    private Player player = new Player(100, 200, 1f, Game.SCALE * 64, Game.SCALE * 40);
     private boolean key_w, key_s, key_a, key_d, key_space, key_enter;
-    private GamePanel gamePanel;
 
-    public Level1(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
+    public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
+        super(gamePanel);
+        this.player = player;
+        Level.GRAVITY = GRAVITY;
         BufferedImage levelAtlas = null;
         final int ATLAS_WIDTH = 12;
         final int ATLAS_HEIGHT = 4;
         try {
-            levelAtlas = ImageIO.read(new File("assets/outside_sprites.png"));
+            levelAtlas = ImageIO.read(new File(levelAtlasPath));
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            levelData = ImageIO.read(new File("assets/level_one_data.png"));
+            levelData = ImageIO.read(new File(levelDataPath));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -164,7 +164,7 @@ public class Level1 extends Scene {
             // playerYDirection--;
         }
         if (key_s) {
-            // playerYDirection++;
+            player.setFastFalling(true);
         }
         if (key_a) {
             playerXDirection--;
@@ -195,6 +195,7 @@ public class Level1 extends Scene {
 
     @Override
     public void update() {
+        handleKeyInputs();
         sceneEntities.update();
     }
 
@@ -204,20 +205,5 @@ public class Level1 extends Scene {
 
     public Player getPlayer() {
         return player;
-    }
-
-    @Override
-    public KeyListener getKeyListener() {
-        return keyListener;
-    }
-
-    @Override
-    public MouseListener getMouseListener() {
-        return mouseListener;
-    }
-
-    @Override
-    public MouseMotionListener getMouseMotionListener() {
-        return mouseMotionListener;
     }
 }

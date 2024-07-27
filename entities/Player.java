@@ -4,7 +4,7 @@ import components.Animation;
 import components.Collider;
 import components.PhysicsController;
 import main.Game;
-import scenes.Level1;
+import scenes.Level;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -23,17 +23,18 @@ public class Player implements Renderable, Updateable {
     private PhysicsController physicsController;
     private Collider collider;
     private Collider groundCollider;
-    private float xColliderOffset = 22 * Game.TILE_SCALE, yColliderOffset = 3 * Game.TILE_SCALE;
-    private float xColliderWidth = 18 * Game.TILE_SCALE, yColliderHeight = 28 * Game.TILE_SCALE;
-    private float xGroundedColliderOffset = 28 * Game.TILE_SCALE, yGroundedColliderOffset = 5 * Game.TILE_SCALE;
+    private float xColliderOffset = 22 * Game.SCALE, yColliderOffset = 3 * Game.SCALE;
+    private float xColliderWidth = 18 * Game.SCALE, yColliderHeight = 28 * Game.SCALE;
+    private float xGroundedColliderOffset = 28 * Game.SCALE, yGroundedColliderOffset = 5 * Game.SCALE;
 
-    private boolean jump = false, isGrounded = false;
-    private final float jumpForce = -0.75f * Game.TILE_SCALE;
+    private boolean jump = false, isGrounded = false, isFastFalling = false;
+    private final float jumpForce = -0.75f * Game.SCALE;
+    private final float fastFall = 0.1f * Game.SCALE;
     private Vector2D lastMovementDirection = new Vector2D(0, 0);
 
     public Player(float x, float y, float speed, float width, float height) {
         physicsController = new PhysicsController(x, y, speed, width, height);
-        physicsController.setAcceleration(new Vector2D(0, Level1.GRAVITY));
+        physicsController.setAcceleration(new Vector2D(0, Level.GRAVITY));
         collider = new Collider(x + xColliderOffset, y + yColliderOffset, xColliderWidth, yColliderHeight);
         xGroundedColliderOffset = collider.getHitBox().width / 2;
         yGroundedColliderOffset = collider.getHitBox().height + 1;
@@ -64,13 +65,19 @@ public class Player implements Renderable, Updateable {
         float initialX = physicsController.getX();
         float initialY = physicsController.getY();
         physicsController.unblockAllMovement();
+        if (isGrounded) {
+            isFastFalling = false;
+        }
         if (jump && isGrounded) {
             physicsController.getAcceleration().add(new Vector2D(0, jumpForce));
             // zero out accumulated velocity in the y direction
             physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
             jump = false;
         } else {
-            physicsController.getAcceleration().setY(Level1.GRAVITY);
+            physicsController.getAcceleration().setY(Level.GRAVITY);
+            if (isFastFalling) {
+                physicsController.getAcceleration().setY(physicsController.getAcceleration().getY() + fastFall);
+            }
             jump = false;
         }
         Vector2D testPosition = physicsController.testYUpdate();
@@ -165,5 +172,9 @@ public class Player implements Renderable, Updateable {
 
     public Collider getGroundCollider() {
         return groundCollider;
+    }
+
+    public void setFastFalling(boolean isFastFalling) {
+        this.isFastFalling = isFastFalling;
     }
 }

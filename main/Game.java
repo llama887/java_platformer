@@ -1,9 +1,11 @@
 package main;
 
 import java.awt.Graphics;
+import scenes.Menu;
 
+import entities.Player;
 import scenes.GameState;
-import scenes.Level1;
+import scenes.Level;
 
 public class Game implements Runnable {
     private GameWindow gameWindow;
@@ -13,14 +15,15 @@ public class Game implements Runnable {
     private final int UPS = 200;
 
     public final static int TILE_SIZE_DEFAULT = 32;
-    public final static float TILE_SCALE = 1.5f;
-    public final static int TILE_SIZE = (int) (TILE_SIZE_DEFAULT * TILE_SCALE);
+    public final static float SCALE = 1.5f;
+    public final static int TILE_SIZE = (int) (TILE_SIZE_DEFAULT * SCALE);
     public final static int WIDTH_IN_TILES = 26;
     public final static int HEIGHT_IN_TILES = 14;
     public final static int GAME_WIDTH = WIDTH_IN_TILES * TILE_SIZE;
     public final static int GAME_HEIGHT = HEIGHT_IN_TILES * TILE_SIZE;
 
-    public Level1 level1;
+    public Menu menu;
+    public Level level1;
 
     public Game() {
         gamePanel = new GamePanel(this);
@@ -33,7 +36,10 @@ public class Game implements Runnable {
     }
 
     public void initialize() {
-        level1 = new Level1(gamePanel);
+        menu = new Menu(gamePanel);
+        Player player = new Player(100, 200, 1.1f, Game.SCALE * 64, Game.SCALE * 40);
+        level1 = new Level(player, 0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data.png",
+                gamePanel);
         GameState.setState(GameState.MENU, gamePanel);
     }
 
@@ -43,6 +49,7 @@ public class Game implements Runnable {
                 level1.update();
                 break;
             case MENU:
+                menu.update();
                 break;
             default:
                 break;
@@ -55,6 +62,7 @@ public class Game implements Runnable {
                 level1.render(g);
                 break;
             case MENU:
+                menu.render(g);
                 break;
             default:
                 break;
@@ -69,7 +77,6 @@ public class Game implements Runnable {
         double updateDelta = 0;
         double renderDelta = 0;
         while (true) {
-            level1.handleKeyInputs();
             long currentTime = System.nanoTime();
             long deltaTime = currentTime - previousTime;
             updateDelta += (deltaTime) / timePerUpdate;

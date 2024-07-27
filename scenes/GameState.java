@@ -3,7 +3,7 @@ package scenes;
 import main.GamePanel;
 
 public enum GameState {
-    UNASSIGNED, PLAYING, MENU;
+    UNASSIGNED, PLAYING, MENU, OPTIONS, QUIT;
 
     private static GameState state = UNASSIGNED;
 

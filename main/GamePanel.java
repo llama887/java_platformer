@@ -24,9 +24,9 @@ public class GamePanel extends JPanel {
                 removeMouseMotionListener(game.level1.getMouseMotionListener());
                 break;
             case MENU:
-                removeKeyListener(game.level1.getKeyListener());
-                removeMouseListener(game.level1.getMouseListener());
-                removeMouseMotionListener(game.level1.getMouseMotionListener());
+                removeKeyListener(game.menu.getKeyListener());
+                removeMouseListener(game.menu.getMouseListener());
+                removeMouseMotionListener(game.menu.getMouseMotionListener());
                 break;
             default:
                 break;
@@ -38,9 +38,9 @@ public class GamePanel extends JPanel {
                 addMouseMotionListener(game.level1.getMouseMotionListener());
                 break;
             case MENU:
-                addKeyListener(game.level1.getKeyListener());
-                addMouseListener(game.level1.getMouseListener());
-                addMouseMotionListener(game.level1.getMouseMotionListener());
+                addKeyListener(game.menu.getKeyListener());
+                addMouseListener(game.menu.getMouseListener());
+                addMouseMotionListener(game.menu.getMouseMotionListener());
                 break;
             default:
                 break;

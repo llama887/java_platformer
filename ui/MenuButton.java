@@ -42,7 +42,7 @@ public class MenuButton implements Renderable, Updateable {
     }
 
     public void centerX() {
-        xPosition = Game.GAME_WIDTH / 2 - BUTTON_WIDTH;
+        xPosition = Game.GAME_WIDTH / 2 - BUTTON_WIDTH / 2;
         collider.moveHitBox(xPosition, yPosition);
     }
 

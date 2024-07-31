@@ -16,6 +16,7 @@ import entities.Player;
 import entities.Tile;
 import main.Game;
 import main.GamePanel;
+import ui.PauseOverlay;
 
 import java.awt.event.MouseEvent;
 
@@ -25,9 +26,12 @@ public class Level extends Scene {
     private Tile[][] map;
     private Player player = new Player(100, 200, 1f, Game.SCALE * 64, Game.SCALE * 40);
     private boolean key_w, key_s, key_a, key_d, key_space, key_enter;
+    private boolean paused;
+    private PauseOverlay pauseOverlay;
 
     public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
+        pauseOverlay = new PauseOverlay(gamePanel);
         this.player = player;
         Level.GRAVITY = GRAVITY;
         BufferedImage levelAtlas = null;
@@ -187,6 +191,7 @@ public class Level extends Scene {
             }
         }
         sceneEntities.render(g);
+        pauseOverlay.render(g);
         return levelData;
     }
 
@@ -194,6 +199,7 @@ public class Level extends Scene {
     public void update() {
         handleKeyInputs();
         sceneEntities.update();
+        pauseOverlay.update();
     }
 
     public SceneEntities getSceneEntities() {

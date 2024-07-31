@@ -1,4 +1,4 @@
-package scenes;
+package ui;
 
 import java.awt.Graphics;
 import java.awt.RenderingHints.Key;
@@ -8,46 +8,36 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.Buffer;
 
 import javax.imageio.ImageIO;
 
-import components.SceneEntities;
 import main.Game;
 import main.GamePanel;
-import ui.MenuButton;
-import ui.Button.ButtonState;
+import scenes.Scene;
 
-public class Menu extends Scene {
-    private MenuButton playButton;
-    private MenuButton optionsButton;
-    private MenuButton quitButton;
+public class PauseOverlay extends Scene {
+    private final int overlayX, overlayY, overlayWidth, overlayHeight;
+    private BufferedImage background = null;
+    private final String BACKGROUND_PATH = "assets/pause_overlay.png";
     private float mouseX, mouseY;
     private boolean mouseClicked;
-    private BufferedImage menuBackground;
-    private final String backgroundPath = "assets/menu_background.png";
-    private final int menuX, menuY, menuWidth, menuHeight;
+    private SoundButton musicButton = new SoundButton((int) (450 * Game.SCALE), (int) (140 * Game.SCALE), 0);
+    private SoundButton sfxButton = new SoundButton((int) (450 * Game.SCALE), (int) (186 * Game.SCALE), 0);
 
-    public Menu(GamePanel gamePanel) {
+    public PauseOverlay(GamePanel gamePanel) {
         super(gamePanel);
-        playButton = new MenuButton(0, (int) (160 * Game.SCALE), Game.level1, 0);
-        optionsButton = new MenuButton(0, (int) (230 * Game.SCALE), Game.menu, 1);
-        quitButton = new MenuButton(0, (int) (300 * Game.SCALE), Game.menu, 2);
-        playButton.centerX();
-        optionsButton.centerX();
-        quitButton.centerX();
-        sceneEntities.addToScene(playButton);
-        sceneEntities.addToScene(optionsButton);
-        sceneEntities.addToScene(quitButton);
         try {
-            menuBackground = ImageIO.read(new File(backgroundPath));
+            background = ImageIO.read(new File(BACKGROUND_PATH));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        menuWidth = (int) (menuBackground.getWidth() * Game.SCALE);
-        menuHeight = (int) (menuBackground.getHeight() * Game.SCALE);
-        menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
-        menuY = Game.GAME_HEIGHT / 2 - menuHeight / 2;
+        overlayWidth = (int) (background.getWidth() * Game.SCALE);
+        overlayHeight = (int) (background.getHeight() * Game.SCALE);
+        overlayX = Game.GAME_WIDTH / 2 - overlayWidth / 2;
+        overlayY = (int) (25 * Game.SCALE);
+        sceneEntities.addToScene(musicButton);
+        sceneEntities.addToScene(sfxButton);
+
         keyListener = new KeyListener() {
             @Override
             public void keyTyped(java.awt.event.KeyEvent e) {
@@ -101,19 +91,16 @@ public class Menu extends Scene {
 
     @Override
     public void update() {
-        playButton.setMouseState(mouseX, mouseY, mouseClicked);
-        optionsButton.setMouseState(mouseX, mouseY, mouseClicked);
-        quitButton.setMouseState(mouseX, mouseY, mouseClicked);
+        musicButton.setMouseState(mouseX, mouseY, mouseClicked);
+        sfxButton.setMouseState(mouseX, mouseY, mouseClicked);
         sceneEntities.update();
-        if (playButton.getButtonState() == ButtonState.CLICKED) {
-            Game.changeScene(Game.level1, gamePanel);
-        }
     }
 
     @Override
     public BufferedImage render(Graphics g) {
-        g.drawImage(menuBackground, menuX, menuY, menuWidth, menuHeight, null);
+        g.drawImage(background, overlayX, overlayY, overlayWidth, overlayHeight, gamePanel);
         sceneEntities.render(g);
-        return menuBackground;
+        return background;
     }
+
 }

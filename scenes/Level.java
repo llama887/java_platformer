@@ -209,4 +209,14 @@ public class Level extends Scene {
     public Player getPlayer() {
         return player;
     }
+
+    @Override
+    public MouseListener getMouseListener() {
+        return pauseOverlay.getMouseListener();
+    }
+
+    @Override
+    public MouseMotionListener getMouseMotionListener() {
+        return pauseOverlay.getMouseMotionListener();
+    }
 }

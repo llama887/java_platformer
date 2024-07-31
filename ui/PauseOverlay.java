@@ -21,8 +21,8 @@ public class PauseOverlay extends Scene {
     private final String BACKGROUND_PATH = "assets/pause_overlay.png";
     private float mouseX, mouseY;
     private boolean mouseClicked;
-    private SoundButton musicButton = new SoundButton((int) (450 * Game.SCALE), (int) (140 * Game.SCALE), 0);
-    private SoundButton sfxButton = new SoundButton((int) (450 * Game.SCALE), (int) (186 * Game.SCALE), 0);
+    private SoundButton musicButton = new SoundButton((int) (450 * Game.SCALE), (int) (140 * Game.SCALE));
+    private SoundButton sfxButton = new SoundButton((int) (450 * Game.SCALE), (int) (186 * Game.SCALE));
 
     public PauseOverlay(GamePanel gamePanel) {
         super(gamePanel);

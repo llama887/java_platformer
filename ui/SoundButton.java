@@ -16,13 +16,9 @@ public class SoundButton extends Button {
 
     @Override
     public void update() {
-        buttonState = ButtonState.NORMAL;
-        if (collider.getHitBox().contains(mouseX, mouseY)) {
-            buttonState = ButtonState.HOVER;
-            if (mouseClicked) {
-                buttonState = ButtonState.CLICKED;
-                muted = !muted;
-            }
+        super.update();
+        if (buttonState == ButtonState.CLICKED) {
+            muted = !muted;
         }
     }
 
@@ -48,7 +44,6 @@ public class SoundButton extends Button {
                 buttonStates.setCurrentIndex(buttonIndex + 2);
                 break;
         }
-        System.out.println(buttonStates.getCurrentIndex() + " " + buttonState);
         g.drawImage(buttonStates.getFrame(), xPosition, yPosition, BUTTON_WIDTH, BUTTON_HEIGHT, null);
         collider.drawHitBox(g);
         return buttonStates.getFrame();

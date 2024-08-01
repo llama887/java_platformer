@@ -15,8 +15,8 @@ public abstract class Button implements Renderable, Updateable {
     protected final int BUTTON_WIDTH, BUTTON_HEIGHT;
     protected int xPosition, yPosition;
     protected Collider collider;
-    protected float mouseX, mouseY;
-    protected boolean mouseClicked;
+    public static float mouseX, mouseY;
+    public static boolean mousePressed, mouseClicked;
 
     public enum ButtonState {
         NORMAL, HOVER, CLICKED;
@@ -39,12 +39,6 @@ public abstract class Button implements Renderable, Updateable {
         return collider;
     }
 
-    public void setMouseState(float mouseX, float mouseY, boolean mouseClicked) {
-        this.mouseX = mouseX;
-        this.mouseY = mouseY;
-        this.mouseClicked = mouseClicked;
-    }
-
     public ButtonState getButtonState() {
         return buttonState;
     }
@@ -58,6 +52,10 @@ public abstract class Button implements Renderable, Updateable {
                 buttonState = ButtonState.CLICKED;
             }
         }
+    }
+
+    public static void resetMouseStates() {
+        mouseClicked = false;
     }
 
     @Override

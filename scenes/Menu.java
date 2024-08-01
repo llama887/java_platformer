@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import components.SceneEntities;
 import main.Game;
 import main.GamePanel;
+import ui.Button;
 import ui.MenuButton;
 import ui.Button.ButtonState;
 
@@ -23,7 +24,7 @@ public class Menu extends Scene {
     private MenuButton optionsButton;
     private MenuButton quitButton;
     private float mouseX, mouseY;
-    private boolean mouseClicked;
+    private boolean mousePressed, mouseReleased;
     private BufferedImage menuBackground;
     private final String backgroundPath = "assets/menu_background.png";
     private final int menuX, menuY, menuWidth, menuHeight;
@@ -65,16 +66,17 @@ public class Menu extends Scene {
         mouseListener = new MouseListener() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                mouseClicked = true;
+                Button.mouseClicked = true;
             }
 
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
+                Button.mousePressed = true;
             }
 
             @Override
             public void mouseReleased(java.awt.event.MouseEvent e) {
-                mouseClicked = false;
+                Button.mousePressed = false;
             }
 
             @Override
@@ -93,21 +95,19 @@ public class Menu extends Scene {
 
             @Override
             public void mouseMoved(java.awt.event.MouseEvent e) {
-                mouseX = e.getX();
-                mouseY = e.getY();
+                Button.mouseX = e.getX();
+                Button.mouseY = e.getY();
             }
         };
     }
 
     @Override
     public void update() {
-        playButton.setMouseState(mouseX, mouseY, mouseClicked);
-        optionsButton.setMouseState(mouseX, mouseY, mouseClicked);
-        quitButton.setMouseState(mouseX, mouseY, mouseClicked);
         sceneEntities.update();
         if (playButton.getButtonState() == ButtonState.CLICKED) {
             Game.changeScene(Game.level1, gamePanel);
         }
+        Button.resetMouseStates();
     }
 
     @Override

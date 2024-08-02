@@ -31,7 +31,7 @@ public class Level extends Scene {
 
     public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
-        pauseOverlay = new PauseOverlay(gamePanel);
+        pauseOverlay = new PauseOverlay(gamePanel, this);
         this.player = player;
         Level.GRAVITY = GRAVITY;
         BufferedImage levelAtlas = null;
@@ -179,6 +179,9 @@ public class Level extends Scene {
         if (key_space) {
             player.setJump(true);
         }
+        if (key_enter) {
+            paused = true;
+        }
         player.getPhysicsController()
                 .setMovementDirection(playerXDirection, playerYDirection);
     }
@@ -191,7 +194,9 @@ public class Level extends Scene {
             }
         }
         sceneEntities.render(g);
-        pauseOverlay.render(g);
+        if (paused) {
+            pauseOverlay.render(g);
+        }
         return levelData;
     }
 
@@ -199,7 +204,9 @@ public class Level extends Scene {
     public void update() {
         handleKeyInputs();
         sceneEntities.update();
-        pauseOverlay.update();
+        if (paused) {
+            pauseOverlay.update();
+        }
     }
 
     public SceneEntities getSceneEntities() {
@@ -218,5 +225,13 @@ public class Level extends Scene {
     @Override
     public MouseMotionListener getMouseMotionListener() {
         return pauseOverlay.getMouseMotionListener();
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
     }
 }

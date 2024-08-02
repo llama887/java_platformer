@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 
 import main.Game;
 import main.GamePanel;
+import scenes.Level;
 import scenes.Scene;
 import ui.Button.ButtonState;
 
@@ -25,9 +26,11 @@ public class PauseOverlay extends Scene {
     private URMButton unpauseButton = new URMButton((int) (462 * Game.SCALE), (int) (325 * Game.SCALE), 0);
     private URMButton replayButton = new URMButton((int) (387 * Game.SCALE), (int) (325 * Game.SCALE), 1);
     private URMButton menuButton = new URMButton((int) (313 * Game.SCALE), (int) (325 * Game.SCALE), 2);
+    private Level level;
 
-    public PauseOverlay(GamePanel gamePanel) {
+    public PauseOverlay(GamePanel gamePanel, Level level) {
         super(gamePanel);
+        this.level = level;
         try {
             background = ImageIO.read(new File(BACKGROUND_PATH));
         } catch (IOException e) {
@@ -98,10 +101,16 @@ public class PauseOverlay extends Scene {
     @Override
     public void update() {
         sceneEntities.update();
-        Button.resetMouseStates();
         if (menuButton.getButtonState() == ButtonState.ACTIVATED) {
             Game.changeScene(Game.menu, gamePanel);
         }
+        if (replayButton.getButtonState() == ButtonState.ACTIVATED) {
+            System.out.println("Replay"); // TODO: Implement replay
+        }
+        if (unpauseButton.getButtonState() == ButtonState.ACTIVATED) {
+            level.setPaused(false);
+        }
+        Button.resetMouseStates();
     }
 
     @Override

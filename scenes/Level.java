@@ -203,10 +203,11 @@ public class Level extends Scene {
     @Override
     public void update() {
         handleKeyInputs();
-        sceneEntities.update();
         if (paused) {
             pauseOverlay.update();
+            return;
         }
+        sceneEntities.update();
     }
 
     public SceneEntities getSceneEntities() {

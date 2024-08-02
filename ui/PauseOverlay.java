@@ -21,6 +21,9 @@ public class PauseOverlay extends Scene {
     private final String BACKGROUND_PATH = "assets/pause_overlay.png";
     private SoundButton musicButton = new SoundButton((int) (450 * Game.SCALE), (int) (140 * Game.SCALE));
     private SoundButton sfxButton = new SoundButton((int) (450 * Game.SCALE), (int) (186 * Game.SCALE));
+    private URMButton unpauseButton = new URMButton((int) (462 * Game.SCALE), (int) (325 * Game.SCALE), 0);
+    private URMButton replayButton = new URMButton((int) (387 * Game.SCALE), (int) (325 * Game.SCALE), 1);
+    private URMButton menuButton = new URMButton((int) (313 * Game.SCALE), (int) (325 * Game.SCALE), 2);
 
     public PauseOverlay(GamePanel gamePanel) {
         super(gamePanel);
@@ -35,6 +38,9 @@ public class PauseOverlay extends Scene {
         overlayY = (int) (25 * Game.SCALE);
         sceneEntities.addToScene(musicButton);
         sceneEntities.addToScene(sfxButton);
+        sceneEntities.addToScene(menuButton);
+        sceneEntities.addToScene(replayButton);
+        sceneEntities.addToScene(unpauseButton);
 
         keyListener = new KeyListener() {
             @Override

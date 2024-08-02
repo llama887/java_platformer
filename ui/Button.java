@@ -45,7 +45,7 @@ public abstract class Button implements Renderable, Updateable {
 
     @Override
     public void update() {
-        System.out.println(mousePressed + " " + mouseClicked);
+
         if (buttonState == ButtonState.CLICKED) {
             buttonState = ButtonState.ACTIVATED;
             activate();

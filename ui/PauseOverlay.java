@@ -58,10 +58,12 @@ public class PauseOverlay extends Scene {
 
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
+                Button.mousePressed = true;
             }
 
             @Override
             public void mouseReleased(java.awt.event.MouseEvent e) {
+                Button.mousePressed = false;
             }
 
             @Override

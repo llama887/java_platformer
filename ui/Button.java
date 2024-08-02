@@ -19,7 +19,7 @@ public abstract class Button implements Renderable, Updateable {
     public static boolean mousePressed, mouseClicked;
 
     public enum ButtonState {
-        NORMAL, HOVER, CLICKED;
+        NORMAL, HOVER, CLICKED, ACTIVATED;
     }
 
     ButtonState buttonState = ButtonState.NORMAL;
@@ -45,17 +45,26 @@ public abstract class Button implements Renderable, Updateable {
 
     @Override
     public void update() {
+        System.out.println(mousePressed + " " + mouseClicked);
+        if (buttonState == ButtonState.CLICKED) {
+            buttonState = ButtonState.ACTIVATED;
+            activate();
+            return;
+        }
         buttonState = ButtonState.NORMAL;
         if (collider.getHitBox().contains(mouseX, mouseY)) {
             buttonState = ButtonState.HOVER;
-            if (mouseClicked) {
+            if (mousePressed) {
                 buttonState = ButtonState.CLICKED;
             }
         }
     }
 
+    public void activate() {
+    };
+
     public static void resetMouseStates() {
-        mouseClicked = false;
+        mousePressed = false;
     }
 
     @Override
@@ -69,6 +78,8 @@ public abstract class Button implements Renderable, Updateable {
                 break;
             case CLICKED:
                 buttonStates.setCurrentIndex(2);
+                break;
+            default:
                 break;
         }
         g.drawImage(buttonStates.getFrame(), xPosition, yPosition, BUTTON_WIDTH, BUTTON_HEIGHT, null);

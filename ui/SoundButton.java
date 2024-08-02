@@ -7,19 +7,22 @@ import components.Animation;
 
 public class SoundButton extends Button {
     private boolean muted = false;
+    private static final int SOUND_BUTTON_WIDTH_DEFAULT = 42, SOUND_BUTTON_HEIGHT_DEFAULT = 42;
+    private static final Animation SOUND_BUTTON_STATES = new Animation("assets/sound_button.png", 0, 42, 42,
+            new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 0, 1 }, { 1, 1 }, { 2, 1 } });
 
     public SoundButton(int xPosition, int yPosition) {
-        super(xPosition, yPosition, 42, 42,
-                new Animation("assets/sound_button.png", 0, 42, 42,
-                        new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 0, 1 }, { 1, 1 }, { 2, 1 } }));
+        super(xPosition, yPosition, SOUND_BUTTON_WIDTH_DEFAULT, SOUND_BUTTON_HEIGHT_DEFAULT, SOUND_BUTTON_STATES);
     }
 
     @Override
     public void update() {
         super.update();
-        if (buttonState == ButtonState.CLICKED) {
-            muted = !muted;
-        }
+    }
+
+    @Override
+    public void activate() {
+        muted = !muted;
     }
 
     public boolean isMuted() {
@@ -43,9 +46,10 @@ public class SoundButton extends Button {
             case CLICKED:
                 buttonStates.setCurrentIndex(buttonIndex + 2);
                 break;
+            default:
+                break;
         }
         g.drawImage(buttonStates.getFrame(), xPosition, yPosition, BUTTON_WIDTH, BUTTON_HEIGHT, null);
-        collider.drawHitBox(g);
         return buttonStates.getFrame();
     }
 }

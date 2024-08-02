@@ -104,7 +104,7 @@ public class Menu extends Scene {
     @Override
     public void update() {
         sceneEntities.update();
-        if (playButton.getButtonState() == ButtonState.CLICKED) {
+        if (playButton.getButtonState() == ButtonState.ACTIVATED) {
             Game.changeScene(Game.level1, gamePanel);
         }
         Button.resetMouseStates();

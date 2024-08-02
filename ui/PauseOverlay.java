@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import main.Game;
 import main.GamePanel;
 import scenes.Scene;
+import ui.Button.ButtonState;
 
 public class PauseOverlay extends Scene {
     private final int overlayX, overlayY, overlayWidth, overlayHeight;
@@ -98,6 +99,9 @@ public class PauseOverlay extends Scene {
     public void update() {
         sceneEntities.update();
         Button.resetMouseStates();
+        if (menuButton.getButtonState() == ButtonState.ACTIVATED) {
+            Game.changeScene(Game.menu, gamePanel);
+        }
     }
 
     @Override

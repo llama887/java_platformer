@@ -45,7 +45,6 @@ public abstract class Button implements Renderable, Updateable {
 
     @Override
     public void update() {
-
         if (buttonState == ButtonState.CLICKED) {
             buttonState = ButtonState.ACTIVATED;
             activate();

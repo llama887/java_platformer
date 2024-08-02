@@ -10,4 +10,5 @@ public class URMButton extends Button {
                 new Animation("assets/urm_buttons.png", 0, URM_BUTTON_WIDTH_DEFAULT, URM_BUTTON_HEIGHT_DEFAULT,
                         new int[][] { { 0, atlasRow }, { 1, atlasRow }, { 2, atlasRow } }));
     }
+
 }

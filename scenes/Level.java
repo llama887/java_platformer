@@ -152,6 +152,7 @@ public class Level extends Scene {
         mouseMotionListener = new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
+
             }
 
             @Override

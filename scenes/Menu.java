@@ -66,7 +66,6 @@ public class Menu extends Scene {
         mouseListener = new MouseListener() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                Button.mouseClicked = true;
             }
 
             @Override

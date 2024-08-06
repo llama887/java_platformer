@@ -16,7 +16,7 @@ public abstract class Button implements Renderable, Updateable {
     protected int xPosition, yPosition;
     protected Collider collider;
     public static float mouseX, mouseY;
-    public static boolean mousePressed, mouseClicked;
+    public static boolean mousePressed;
 
     public enum ButtonState {
         NORMAL, HOVER, CLICKED, ACTIVATED;
@@ -76,6 +76,7 @@ public abstract class Button implements Renderable, Updateable {
                 buttonStates.setCurrentIndex(1);
                 break;
             case CLICKED:
+            case ACTIVATED:
                 buttonStates.setCurrentIndex(2);
                 break;
             default:

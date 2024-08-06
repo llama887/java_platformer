@@ -27,6 +27,7 @@ public class PauseOverlay extends Scene {
     private URMButton replayButton = new URMButton((int) (387 * Game.SCALE), (int) (325 * Game.SCALE), 1);
     private URMButton menuButton = new URMButton((int) (313 * Game.SCALE), (int) (325 * Game.SCALE), 2);
     private Level level;
+    private VolumnSlider volumnSlider = new VolumnSlider((int) (309 * Game.SCALE), (int) (278 * Game.SCALE));
 
     public PauseOverlay(GamePanel gamePanel, Level level) {
         super(gamePanel);
@@ -45,6 +46,7 @@ public class PauseOverlay extends Scene {
         sceneEntities.addToScene(menuButton);
         sceneEntities.addToScene(replayButton);
         sceneEntities.addToScene(unpauseButton);
+        sceneEntities.addToScene(volumnSlider);
 
         keyListener = new KeyListener() {
             @Override
@@ -63,17 +65,18 @@ public class PauseOverlay extends Scene {
         mouseListener = new MouseListener() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                Button.mouseClicked = true;
             }
 
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
                 Button.mousePressed = true;
+                volumnSlider.setDragging(true);
             }
 
             @Override
             public void mouseReleased(java.awt.event.MouseEvent e) {
                 Button.mousePressed = false;
+                volumnSlider.setDragging(false);
             }
 
             @Override
@@ -88,6 +91,7 @@ public class PauseOverlay extends Scene {
         mouseMotionListener = new MouseMotionListener() {
             @Override
             public void mouseDragged(java.awt.event.MouseEvent e) {
+                volumnSlider.setSliderPosition(e.getX());
             }
 
             @Override

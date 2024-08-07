@@ -31,8 +31,8 @@ public class VolumnSlider extends Button {
                 VOLUME_BUTTON_HEIGHT_DEFAULT, VOLUME_BUTTON_STATES);
         sliderX = xPosition;
         sliderY = yPosition;
-        minX = xPosition + super.BUTTON_WIDTH / 2;
-        maxX = xPosition + SLIDER_WIDTH - super.BUTTON_WIDTH;
+        minX = sliderX + super.BUTTON_WIDTH / 2;
+        maxX = sliderX + SLIDER_WIDTH - super.BUTTON_WIDTH;
         try {
             slider = ImageIO.read(new File(SLIDER_PATH));
         } catch (IOException e) {

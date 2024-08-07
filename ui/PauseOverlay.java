@@ -1,7 +1,6 @@
 package ui;
 
 import java.awt.Graphics;
-import java.awt.RenderingHints.Key;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;

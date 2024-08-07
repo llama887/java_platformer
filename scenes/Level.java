@@ -28,6 +28,7 @@ public class Level extends Scene {
     private boolean key_w, key_s, key_a, key_d, key_space, key_enter;
     private boolean paused;
     private PauseOverlay pauseOverlay;
+    private float maxWidth;
 
     public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
@@ -58,6 +59,7 @@ public class Level extends Scene {
                 }
             }
         }
+        maxWidth = map[0].length * Game.SCALE;
         // create input handlers
         keyListener = new KeyListener() {
             @Override

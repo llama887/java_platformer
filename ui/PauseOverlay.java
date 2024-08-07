@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -117,9 +118,12 @@ public class PauseOverlay extends Scene {
     }
 
     @Override
-    public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
-        g.drawImage(background, overlayX - xLevelOffset, overlayY - yLevelOffset, overlayWidth, overlayHeight,
+    public void render(Graphics g, int xLevelOffset_UNUSED, int yLevelOffset_UNUSED) {
+        g.setColor(new Color(0, 0, 0, 150)); // darken pause background
+        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+        g.drawImage(background, overlayX, overlayY, overlayWidth, overlayHeight,
                 gamePanel);
+        sceneEntities.render(g, 0, 0);
     }
 
 }

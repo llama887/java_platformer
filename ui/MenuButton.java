@@ -1,10 +1,6 @@
 package ui;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-
 import components.Animation;
-import components.Collider;
 import main.Game;
 import scenes.Scene;
 

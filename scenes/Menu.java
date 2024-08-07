@@ -25,8 +25,9 @@ public class Menu extends Scene {
     private MenuButton quitButton;
     private float mouseX, mouseY;
     private boolean mousePressed, mouseReleased;
-    private BufferedImage menuBackground;
-    private final String backgroundPath = "assets/menu_background.png";
+    private BufferedImage menuBackground, background;
+    private final String menuBackgroundPath = "assets/menu_background.png",
+            backgroundPath = "assets/background_menu.png";
     private final int menuX, menuY, menuWidth, menuHeight;
 
     public Menu(GamePanel gamePanel) {
@@ -41,7 +42,12 @@ public class Menu extends Scene {
         sceneEntities.addToScene(optionsButton);
         sceneEntities.addToScene(quitButton);
         try {
-            menuBackground = ImageIO.read(new File(backgroundPath));
+            menuBackground = ImageIO.read(new File(menuBackgroundPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            background = ImageIO.read(new File(backgroundPath));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -111,6 +117,7 @@ public class Menu extends Scene {
 
     @Override
     public void render(Graphics g, int xLevelOffset_UNUSED, int yLevelOffset_UNUSED) {
+        g.drawImage(background, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         g.drawImage(menuBackground, menuX, menuY, menuWidth, menuHeight, null);
         sceneEntities.render(g, 0, 0);
     }

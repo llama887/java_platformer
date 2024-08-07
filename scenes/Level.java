@@ -231,14 +231,14 @@ public class Level extends Scene {
         int deltaX = playerX - xLevelOffset;
         int deltaY = playerY - yLevelOffset;
         if (deltaX < LEFT_BOARDER) {
-            xLevelOffset += playerX - LEFT_BOARDER;
+            xLevelOffset += deltaX - LEFT_BOARDER;
         } else if (deltaX > RIGHT_BOARDER) {
-            xLevelOffset += playerX - RIGHT_BOARDER;
+            xLevelOffset += deltaX - RIGHT_BOARDER;
         }
         if (deltaY < TOP_BOARDER) {
-            yLevelOffset += playerY - TOP_BOARDER;
+            yLevelOffset += deltaY - TOP_BOARDER;
         } else if (deltaY > BOTTOM_BOARDER) {
-            yLevelOffset += playerY - BOTTOM_BOARDER;
+            yLevelOffset += deltaY - BOTTOM_BOARDER;
         }
         if (xLevelOffset < 0) {
             xLevelOffset = 0;

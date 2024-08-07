@@ -34,7 +34,7 @@ public class SoundButton extends Button {
     }
 
     @Override
-    public BufferedImage render(Graphics g) {
+    public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
         int buttonIndex = muted ? 3 : 0;
         switch (buttonState) {
             case NORMAL:
@@ -49,7 +49,7 @@ public class SoundButton extends Button {
             default:
                 break;
         }
-        g.drawImage(buttonStates.getFrame(), xPosition, yPosition, BUTTON_WIDTH, BUTTON_HEIGHT, null);
-        return buttonStates.getFrame();
+        g.drawImage(buttonStates.getFrame(), xPosition - xLevelOffset, yPosition - yLevelOffset, BUTTON_WIDTH,
+                BUTTON_HEIGHT, null);
     }
 }

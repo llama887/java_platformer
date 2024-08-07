@@ -110,9 +110,8 @@ public class Menu extends Scene {
     }
 
     @Override
-    public BufferedImage render(Graphics g) {
+    public void render(Graphics g, int xLevelOffset_UNUSED, int yLevelOffset_UNUSED) {
         g.drawImage(menuBackground, menuX, menuY, menuWidth, menuHeight, null);
-        sceneEntities.render(g);
-        return menuBackground;
+        sceneEntities.render(g, 0, 0);
     }
 }

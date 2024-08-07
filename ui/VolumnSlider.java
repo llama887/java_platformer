@@ -55,9 +55,9 @@ public class VolumnSlider extends Button {
     }
 
     @Override
-    public BufferedImage render(Graphics g) {
-        g.drawImage(slider, sliderX, sliderY, SLIDER_WIDTH, SLIDER_HEIGHT, null);
-        return super.render(g);
+    public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
+        g.drawImage(slider, sliderX - xLevelOffset, sliderY - yLevelOffset, SLIDER_WIDTH, SLIDER_HEIGHT, null);
+        super.render(g, xLevelOffset, yLevelOffset);
     }
 
     @Override

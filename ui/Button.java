@@ -67,7 +67,7 @@ public abstract class Button implements Renderable, Updateable {
     }
 
     @Override
-    public BufferedImage render(Graphics g) {
+    public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
         switch (buttonState) {
             case NORMAL:
                 buttonStates.setCurrentIndex(0);
@@ -82,8 +82,8 @@ public abstract class Button implements Renderable, Updateable {
             default:
                 break;
         }
-        g.drawImage(buttonStates.getFrame(), xPosition, yPosition, BUTTON_WIDTH, BUTTON_HEIGHT, null);
-        collider.drawHitBox(g);
-        return buttonStates.getFrame();
+        g.drawImage(buttonStates.getFrame(), xPosition - xLevelOffset, yPosition - yLevelOffset, BUTTON_WIDTH,
+                BUTTON_HEIGHT, null);
+        collider.drawHitBox(g, xLevelOffset, yLevelOffset);
     }
 }

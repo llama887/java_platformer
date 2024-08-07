@@ -1,8 +1,7 @@
 package utils;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 
 public interface Renderable {
-    public BufferedImage render(Graphics g);
+    public void render(Graphics g, int xLevelOffset, int yLevelOffset);
 }

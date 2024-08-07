@@ -21,9 +21,8 @@ public class Tile implements Renderable {
     }
 
     @Override
-    public BufferedImage render(Graphics g) {
-        g.drawImage(defaultSprite, x, y, width, height, null);
-        return defaultSprite;
+    public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
+        g.drawImage(defaultSprite, x - xLevelOffset, y - yLevelOffset, width, height, null);
     }
 
     public Collider getCollider() {

@@ -28,7 +28,16 @@ public class Level extends Scene {
     private boolean key_w, key_s, key_a, key_d, key_space, key_enter;
     private boolean paused;
     private PauseOverlay pauseOverlay;
-    private float maxWidth;
+    private final float MAX_WIDTH, MAX_HEIGHT;
+    private final int MAX_WIDTH_IN_TILES, MAX_HEIGHT_IN_TILES;
+    private int xLevelOffset;
+    private int yLevelOffset;
+    private final int LEFT_BOARDER = (int) (Game.GAME_WIDTH * 0.2);
+    private final int RIGHT_BOARDER = (int) (Game.GAME_WIDTH * 0.8);
+    private final int TOP_BOARDER = (int) (Game.GAME_HEIGHT * 0.2);
+    private final int BOTTOM_BOARDER = (int) (Game.GAME_HEIGHT * 0.8);
+    private int maxTilesOffsetX, maxTilesOffsetY;
+    private int maxOffsetX, maxOffsetY;
 
     public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
@@ -59,7 +68,14 @@ public class Level extends Scene {
                 }
             }
         }
-        maxWidth = map[0].length * Game.SCALE;
+        MAX_WIDTH_IN_TILES = map[0].length;
+        MAX_WIDTH = MAX_WIDTH_IN_TILES * Game.SCALE;
+        MAX_HEIGHT_IN_TILES = map.length;
+        MAX_HEIGHT = MAX_HEIGHT_IN_TILES * Game.SCALE;
+        maxTilesOffsetX = MAX_WIDTH_IN_TILES - Game.WIDTH_IN_TILES;
+        maxTilesOffsetY = MAX_HEIGHT_IN_TILES - Game.HEIGHT_IN_TILES;
+        maxOffsetX = maxTilesOffsetX * Game.TILE_SIZE;
+        maxOffsetY = maxTilesOffsetY * Game.TILE_SIZE;
         // create input handlers
         keyListener = new KeyListener() {
             @Override
@@ -190,17 +206,16 @@ public class Level extends Scene {
     }
 
     @Override
-    public BufferedImage render(Graphics g) {
+    public void render(Graphics g, int xLevelOffset_UNUSED, int yLevelOffset_UNUSED) {
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
-                map[y][x].render(g);
+                map[y][x].render(g, xLevelOffset, yLevelOffset);
             }
         }
-        sceneEntities.render(g);
+        sceneEntities.render(g, xLevelOffset, yLevelOffset);
         if (paused) {
-            pauseOverlay.render(g);
+            pauseOverlay.render(g, xLevelOffset, yLevelOffset);
         }
-        return levelData;
     }
 
     @Override
@@ -211,6 +226,30 @@ public class Level extends Scene {
             return;
         }
         sceneEntities.update();
+        int playerX = (int) player.getPhysicsController().getX();
+        int playerY = (int) player.getPhysicsController().getY();
+        int deltaX = playerX - xLevelOffset;
+        int deltaY = playerY - yLevelOffset;
+        if (deltaX < LEFT_BOARDER) {
+            xLevelOffset += playerX - LEFT_BOARDER;
+        } else if (deltaX > RIGHT_BOARDER) {
+            xLevelOffset += playerX - RIGHT_BOARDER;
+        }
+        if (deltaY < TOP_BOARDER) {
+            yLevelOffset += playerY - TOP_BOARDER;
+        } else if (deltaY > BOTTOM_BOARDER) {
+            yLevelOffset += playerY - BOTTOM_BOARDER;
+        }
+        if (xLevelOffset < 0) {
+            xLevelOffset = 0;
+        } else if (xLevelOffset > maxOffsetX) {
+            xLevelOffset = maxOffsetX;
+        }
+        if (yLevelOffset < 0) {
+            yLevelOffset = 0;
+        } else if (yLevelOffset > maxOffsetY) {
+            yLevelOffset = maxOffsetY;
+        }
     }
 
     public SceneEntities getSceneEntities() {

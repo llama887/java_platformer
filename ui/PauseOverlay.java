@@ -117,10 +117,9 @@ public class PauseOverlay extends Scene {
     }
 
     @Override
-    public BufferedImage render(Graphics g) {
-        g.drawImage(background, overlayX, overlayY, overlayWidth, overlayHeight, gamePanel);
-        sceneEntities.render(g);
-        return background;
+    public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
+        g.drawImage(background, overlayX - xLevelOffset, overlayY - yLevelOffset, overlayWidth, overlayHeight,
+                gamePanel);
     }
 
 }

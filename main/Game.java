@@ -50,7 +50,7 @@ public class Game implements Runnable {
     }
 
     public void render(Graphics g) {
-        currentScene.get().render(g);
+        currentScene.get().render(g, 0, 0);
     }
 
     public static void changeScene(Scene newScene, GamePanel gamePanel) {

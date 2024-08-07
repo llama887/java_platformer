@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 import utils.Renderable;
 import utils.Updateable;
 
-public class SceneEntities {
+public class SceneEntities implements Renderable, Updateable {
     private ArrayList<Renderable> renderables = new ArrayList<Renderable>();
     private ArrayList<Updateable> updateables = new ArrayList<Updateable>();
 
@@ -24,9 +24,9 @@ public class SceneEntities {
         }
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
         for (Renderable renderable : renderables) {
-            renderable.render(g);
+            renderable.render(g, xLevelOffset, yLevelOffset);
         }
     }
 

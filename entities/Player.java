@@ -127,7 +127,7 @@ public class Player implements Renderable, Updateable {
     }
 
     @Override
-    public BufferedImage render(Graphics g) {
+    public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
         if (lastMovementDirection.magnitude() == 0) {
             currentAnimation = idleAnimation;
         } else if (lastMovementDirection.getY() < 0 && !isGrounded) {
@@ -144,14 +144,13 @@ public class Player implements Renderable, Updateable {
         }
         currentAnimation.setAnimationTick(currentAnimation.getAnimationTick() + 1);
 
-        g.drawImage(currentFrame, (int) physicsController.getX(),
-                (int) physicsController.getY(),
+        g.drawImage(currentFrame, (int) physicsController.getX() - xLevelOffset,
+                (int) physicsController.getY() - yLevelOffset,
                 (int) physicsController.getWidth(),
                 (int) physicsController.getHeight(),
                 null);
-        collider.drawHitBox(g);
-        groundCollider.drawHitBox(g);
-        return currentAnimation.getFrame();
+        collider.drawHitBox(g, xLevelOffset, yLevelOffset);
+        groundCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
     }
 
     public PhysicsController getPhysicsController() {

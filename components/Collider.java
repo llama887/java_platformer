@@ -104,9 +104,10 @@ public class Collider {
      *
      * @param g the Graphics object
      */
-    public void drawHitBox(Graphics g) {
+    public void drawHitBox(Graphics g, int xLevelOffset, int yLevelOffset) {
         g.setColor(Color.RED);
-        g.drawRect((int) hitBox.x, (int) hitBox.y, (int) hitBox.width, (int) hitBox.height);
+        g.drawRect((int) hitBox.x - xLevelOffset, (int) hitBox.y - yLevelOffset, (int) hitBox.width,
+                (int) hitBox.height);
     }
 
     /**

@@ -26,9 +26,9 @@ public class Menu extends Scene {
     private float mouseX, mouseY;
     private boolean mousePressed, mouseReleased;
     private BufferedImage menuBackground, background;
-    private final String menuBackgroundPath = "assets/menu_background.png",
-            backgroundPath = "assets/background_menu.png";
-    private final int menuX, menuY, menuWidth, menuHeight;
+    private final String MENU_BACKGROUND_PATH = "assets/menu_background.png",
+            BACKGROUND_PATH = "assets/background_menu.png";
+    private final int MENU_X, MENU_Y, MENU_WIDTH, MENU_HEIGHT;
 
     public Menu(GamePanel gamePanel) {
         super(gamePanel);
@@ -42,19 +42,19 @@ public class Menu extends Scene {
         sceneEntities.addToScene(optionsButton);
         sceneEntities.addToScene(quitButton);
         try {
-            menuBackground = ImageIO.read(new File(menuBackgroundPath));
+            menuBackground = ImageIO.read(new File(MENU_BACKGROUND_PATH));
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            background = ImageIO.read(new File(backgroundPath));
+            background = ImageIO.read(new File(BACKGROUND_PATH));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        menuWidth = (int) (menuBackground.getWidth() * Game.SCALE);
-        menuHeight = (int) (menuBackground.getHeight() * Game.SCALE);
-        menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
-        menuY = Game.GAME_HEIGHT / 2 - menuHeight / 2;
+        MENU_WIDTH = (int) (menuBackground.getWidth() * Game.SCALE);
+        MENU_HEIGHT = (int) (menuBackground.getHeight() * Game.SCALE);
+        MENU_X = Game.GAME_WIDTH / 2 - MENU_WIDTH / 2;
+        MENU_Y = Game.GAME_HEIGHT / 2 - MENU_HEIGHT / 2;
         keyListener = new KeyListener() {
             @Override
             public void keyTyped(java.awt.event.KeyEvent e) {
@@ -118,7 +118,7 @@ public class Menu extends Scene {
     @Override
     public void render(Graphics g, int xLevelOffset_UNUSED, int yLevelOffset_UNUSED) {
         g.drawImage(background, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
-        g.drawImage(menuBackground, menuX, menuY, menuWidth, menuHeight, null);
+        g.drawImage(menuBackground, MENU_X, MENU_Y, MENU_WIDTH, MENU_HEIGHT, null);
         sceneEntities.render(g, 0, 0);
     }
 }

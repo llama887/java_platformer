@@ -36,10 +36,10 @@ public class Player implements Renderable, Updateable {
         physicsController = new PhysicsController(x, y, speed, width, height);
         physicsController.setAcceleration(new Vector2D(0, Level.GRAVITY));
         collider = new Collider(x + xColliderOffset, y + yColliderOffset, xColliderWidth, yColliderHeight);
-        xGroundedColliderOffset = collider.getHitBox().width / 2;
+        xGroundedColliderOffset = 0;
         yGroundedColliderOffset = collider.getHitBox().height + 1;
         groundCollider = new Collider(collider.getX() + xGroundedColliderOffset,
-                collider.getY() + yGroundedColliderOffset, 1, 1);
+                collider.getY() + yGroundedColliderOffset, collider.getHitBox().width, 1);
         idleAnimation = new Animation(PLAYER_ATLAS, ANIMATION_SPEED, SPRITE_WIDTH, SPRITE_HEIGHT,
                 new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 } });
         runAnimation = new Animation(PLAYER_ATLAS, ANIMATION_SPEED, SPRITE_WIDTH, SPRITE_HEIGHT,

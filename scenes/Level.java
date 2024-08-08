@@ -8,6 +8,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -38,6 +39,22 @@ public class Level extends Scene {
     private final int BOTTOM_BOARDER = (int) (Game.GAME_HEIGHT * 0.8);
     private int maxTilesOffsetX, maxTilesOffsetY;
     private int maxOffsetX, maxOffsetY;
+    private final String LEVEL_BACKGROUND_PATH = "assets/level_background.png";
+    private BufferedImage levelBackground, bigClouds, smallClouds;
+    private final String BIG_CLOUDS_PATH = "assets/big_clouds.png";
+    private final int BIG_CLOUD_WIDTH_DEFAULT = 448;
+    private final int BIG_CLOUD_HEIGHT_DEFAULT = 101;
+    private final int BIG_CLOUD_WIDTH = (int) (BIG_CLOUD_WIDTH_DEFAULT * Game.SCALE);
+    private final int BIG_CLOUD_HEIGHT = (int) (BIG_CLOUD_HEIGHT_DEFAULT * Game.SCALE);
+    private final String SMALL_CLOUDS_PATH = "assets/small_clouds.png";
+    private final int SMALL_CLOUD_WIDTH_DEFAULT = 74;
+    private final int SMALL_CLOUD_HEIGHT_DEFAULT = 24;
+    private final int SMALL_CLOUD_WIDTH = (int) (SMALL_CLOUD_WIDTH_DEFAULT *
+            Game.SCALE);
+    private final int SMALL_CLOUD_HEIGHT = (int) (SMALL_CLOUD_HEIGHT_DEFAULT *
+            Game.SCALE);
+    private int[] smallCloudPositionsY;
+    private Random random = new Random();
 
     public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
@@ -54,6 +71,21 @@ public class Level extends Scene {
         }
         try {
             levelData = ImageIO.read(new File(levelDataPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            levelBackground = ImageIO.read(new File(LEVEL_BACKGROUND_PATH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            bigClouds = ImageIO.read(new File(BIG_CLOUDS_PATH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            smallClouds = ImageIO.read(new File(SMALL_CLOUDS_PATH));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,6 +108,11 @@ public class Level extends Scene {
         maxTilesOffsetY = MAX_HEIGHT_IN_TILES - Game.HEIGHT_IN_TILES;
         maxOffsetX = maxTilesOffsetX * Game.TILE_SIZE;
         maxOffsetY = maxTilesOffsetY * Game.TILE_SIZE;
+        smallCloudPositionsY = new int[8];
+        for (int i = 0; i < smallCloudPositionsY.length; i++) {
+            smallCloudPositionsY[i] = (int) (70 * Game.SCALE) + random.nextInt((int) (150
+                    * Game.SCALE));
+        }
         // create input handlers
         keyListener = new KeyListener() {
             @Override
@@ -207,6 +244,17 @@ public class Level extends Scene {
 
     @Override
     public void render(Graphics g, int xLevelOffset_UNUSED, int yLevelOffset_UNUSED) {
+        g.drawImage(levelBackground, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+        for (int i = 0; i < 3; i++) {
+            g.drawImage(bigClouds, 0 + i * BIG_CLOUD_WIDTH, (int) (204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT,
+                    null);
+        }
+        for (int i = 0; i < smallCloudPositionsY.length; i++) {
+            g.drawImage(smallClouds, SMALL_CLOUD_WIDTH * 4 * i, smallCloudPositionsY[i],
+                    SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
+        }
+        // g.drawImage(smallClouds, 100, 200, SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT,
+        // null);
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
                 map[y][x].render(g, xLevelOffset, yLevelOffset);

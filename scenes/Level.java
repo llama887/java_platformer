@@ -110,7 +110,7 @@ public class Level extends Scene {
         maxOffsetY = maxTilesOffsetY * Game.TILE_SIZE;
         smallCloudPositionsY = new int[8];
         for (int i = 0; i < smallCloudPositionsY.length; i++) {
-            smallCloudPositionsY[i] = (int) (70 * Game.SCALE) + random.nextInt((int) (150
+            smallCloudPositionsY[i] = (int) (90 * Game.SCALE) + random.nextInt((int) (120
                     * Game.SCALE));
         }
         // create input handlers
@@ -246,15 +246,14 @@ public class Level extends Scene {
     public void render(Graphics g, int xLevelOffset_UNUSED, int yLevelOffset_UNUSED) {
         g.drawImage(levelBackground, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         for (int i = 0; i < 3; i++) {
-            g.drawImage(bigClouds, 0 + i * BIG_CLOUD_WIDTH, (int) (204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT,
+            g.drawImage(bigClouds, 0 + i * BIG_CLOUD_WIDTH - (int) (xLevelOffset * 0.3), (int) (204 * Game.SCALE),
+                    BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT,
                     null);
         }
         for (int i = 0; i < smallCloudPositionsY.length; i++) {
-            g.drawImage(smallClouds, SMALL_CLOUD_WIDTH * 4 * i, smallCloudPositionsY[i],
+            g.drawImage(smallClouds, SMALL_CLOUD_WIDTH * 3 * i - (int) (xLevelOffset * 0.6), smallCloudPositionsY[i],
                     SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
         }
-        // g.drawImage(smallClouds, 100, 200, SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT,
-        // null);
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
                 map[y][x].render(g, xLevelOffset, yLevelOffset);

@@ -2,6 +2,10 @@ package scenes;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+import entities.Crabby;
+import entities.Enemy;
 import entities.Tile;
 import main.Game;
 
@@ -36,5 +40,18 @@ public class LevelBuilder {
             }
         }
         return tileMap;
+    }
+
+    public static ArrayList<Enemy> generateEnemies(BufferedImage levelData) {
+        ArrayList<Enemy> enemies = new ArrayList<>();
+        for (int y = 0; y < levelData.getHeight(); y++) {
+            for (int x = 0; x < levelData.getWidth(); x++) {
+                int value = new Color(levelData.getRGB(x, y)).getGreen();
+                if (value == Enemy.CRABBY_INDEX) {
+                    enemies.add(new Crabby(x * Game.TILE_SIZE, y * Game.TILE_SIZE));
+                }
+            }
+        }
+        return enemies;
     }
 }

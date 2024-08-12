@@ -8,11 +8,14 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 
 import components.SceneEntities;
+import entities.Enemy;
 import entities.Player;
 import entities.Tile;
 import main.Game;
@@ -55,6 +58,7 @@ public class Level extends Scene {
             Game.SCALE);
     private int[] smallCloudPositionsY;
     private Random random = new Random();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
 
     public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
@@ -99,6 +103,10 @@ public class Level extends Scene {
                     player.getGroundCollider().addOtherCollider(map[y][x].getCollider());
                 }
             }
+        }
+        enemies = LevelBuilder.generateEnemies(levelData);
+        for (Enemy enemy : enemies) {
+            sceneEntities.addToScene(enemy);
         }
         MAX_WIDTH_IN_TILES = map[0].length;
         MAX_WIDTH = MAX_WIDTH_IN_TILES * Game.SCALE;

@@ -24,6 +24,8 @@ public class Crabby extends Enemy {
     private static float SPEED = 0.5f;
     private boolean touchedFloor = false;
     private float sightRangeX = 200 * Game.SCALE;
+    private float attackRangeX = 30 * Game.SCALE;
+    private Collider attackCollider;
 
     public enum CrabbyState {
         IDLE, WALK, ATTACK, HIT, DEATH
@@ -75,14 +77,12 @@ public class Crabby extends Enemy {
 
     @Override
     public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
-        if (physicsController.getMovementDirection().magnitude() != 0) {
-            currentAnimation = walkAnimation;
-        } else {
-            currentAnimation = idleAnimation;
-        }
         if (currentAnimation.getAnimationTick() >= currentAnimation.getAnimationSpeed()) {
             currentAnimation.nextFrame();
             currentFrame = currentAnimation.getFrame();
+            if (currentAnimation.isLastFrame() && aiState == CrabbyState.ATTACK) {
+                setAiState(CrabbyState.WALK);
+            }
             currentAnimation.setAnimationTick(0);
         }
         currentAnimation.setAnimationTick(currentAnimation.getAnimationTick() + 1);
@@ -101,75 +101,92 @@ public class Crabby extends Enemy {
         float initialX = physicsController.getX();
         float initialY = physicsController.getY();
         physicsController.unblockAllMovement();
-        physicsController.getAcceleration().setY(Level.GRAVITY);
         switch (aiState) {
             case IDLE:
                 aiState = CrabbyState.WALK;
                 break;
             case WALK:
+                if (canSeePlayer(sightRangeX)) {
+                    physicsController
+                            .setMovementDirection(
+                                    (int) (player.getPhysicsController().getX() - physicsController.getX()), 0);
+                    physicsController.getMovementDirection().normalize();
+                }
+                if (physicsController.getMovementDirection().getX() == 0) {
+                    physicsController.setMovementDirection(-1, 0);
+                }
+                if (physicsController.getMovementDirection().getX() > 0) {
+                    xFloorDectorOffset = collider.getHitBox().width + 1;
+                } else if (physicsController.getMovementDirection().getX() < 0) {
+                    xFloorDectorOffset = -1;
+                }
+                if (!floorDector.checkCollision()) {
+                    physicsController.getMovementDirection().setX(physicsController.getMovementDirection().getX() * -1);
+                }
+                if (!touchedFloor) {
+                    physicsController.getAcceleration().setY(Level.GRAVITY);
+                    Vector2D testPosition = physicsController.testYUpdate();
+                    collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
+                    if (!collider.checkCollision()) {
+                        physicsController.yUpdate();
+                    } else {
+                        touchedFloor = true;
+                        collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
+                                yColliderOffset);
+                        float deltaY = testPosition.getY() - physicsController.getY();
+                        try {
+                            Vector2D distanceToNearestCollider = collider
+                                    .distanceToNextCollider(new Vector2D(0, deltaY));
+                            physicsController.setY(physicsController.getY() +
+                                    distanceToNearestCollider.getY());
+                            if (distanceToNearestCollider.getY() != 0) {
+                                physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
+                            }
+                            collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
+                                    yColliderOffset);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                Vector2D testPosition = physicsController.testXUpdate();
+                collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
+                if (!collider.checkCollision()) {
+                    physicsController.xUpdate();
+                } else {
+                    float deltaX = testPosition.getX() - physicsController.getX();
+                    collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
+                            yColliderOffset);
+                    try {
+                        Vector2D distanceToNearestCollider = collider.distanceToNextCollider(new Vector2D(deltaX, 0));
+                        physicsController.setX(physicsController.getX() +
+                                distanceToNearestCollider.getX());
+                        if (distanceToNearestCollider.getX() != 0) {
+                            physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
+                        }
+                        collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
+                                yColliderOffset);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                floorDector.moveHitBox(collider.getX(), collider.getY(), xFloorDectorOffset, yFloorDectorOffset);
+                lastMovementDirection = new Vector2D(physicsController.getX() - initialX,
+                        physicsController.getY() - initialY);
+                if (canSeePlayer(attackRangeX)) {
+                    setAiState(CrabbyState.ATTACK);
+                    break;
+                }
+                break;
+            case ATTACK:
+                physicsController.setVelocity(new Vector2D(0.0f, 0.0f));
+                if (attackAnimation.isLastFrame()) {
+                    setAiState(CrabbyState.WALK);
+                }
                 break;
             default:
                 break;
         }
-        if (canSeePlayer(sightRangeX)) {
-            physicsController
-                    .setMovementDirection((int) (player.getPhysicsController().getX() - physicsController.getX()), 0);
-            physicsController.getMovementDirection().normalize();
-        }
-        if (physicsController.getMovementDirection().getX() > 0) {
-            xFloorDectorOffset = collider.getHitBox().width + 1;
-        } else if (physicsController.getMovementDirection().getX() < 0) {
-            xFloorDectorOffset = -1;
-        }
-        if (!floorDector.checkCollision()) {
-            physicsController.getMovementDirection().setX(physicsController.getMovementDirection().getX() * -1);
-        }
-        if (!touchedFloor) {
-            Vector2D testPosition = physicsController.testYUpdate();
-            collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
-            if (!collider.checkCollision()) {
-                physicsController.yUpdate();
-            } else {
-                touchedFloor = true;
-                collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
-                        yColliderOffset);
-                float deltaY = testPosition.getY() - physicsController.getY();
-                try {
-                    Vector2D distanceToNearestCollider = collider.distanceToNextCollider(new Vector2D(0, deltaY));
-                    physicsController.setY(physicsController.getY() +
-                            distanceToNearestCollider.getY());
-                    if (distanceToNearestCollider.getY() != 0) {
-                        physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
-                    }
-                    collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
-                            yColliderOffset);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        Vector2D testPosition = physicsController.testXUpdate();
-        collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
-        if (!collider.checkCollision()) {
-            physicsController.xUpdate();
-        } else {
-            float deltaX = testPosition.getX() - physicsController.getX();
-            collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset, yColliderOffset);
-            try {
-                Vector2D distanceToNearestCollider = collider.distanceToNextCollider(new Vector2D(deltaX, 0));
-                physicsController.setX(physicsController.getX() +
-                        distanceToNearestCollider.getX());
-                if (distanceToNearestCollider.getX() != 0) {
-                    physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
-                }
-                collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
-                        yColliderOffset);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        floorDector.moveHitBox(collider.getX(), collider.getY(), xFloorDectorOffset, yFloorDectorOffset);
-        lastMovementDirection = new Vector2D(physicsController.getX() - initialX, physicsController.getY() - initialY);
         return;
     }
 
@@ -185,19 +202,25 @@ public class Crabby extends Enemy {
         this.aiState = aiState;
         switch (aiState) {
             case IDLE:
-                idleAnimation.setAnimationTick(0);
+                idleAnimation.setCurrentIndex(0);
+                currentAnimation = idleAnimation;
                 break;
             case WALK:
-                walkAnimation.setAnimationTick(0);
+                walkAnimation.setCurrentIndex(0);
+                currentAnimation = walkAnimation;
                 break;
             case ATTACK:
-                attackAnimation.setAnimationTick(0);
+                physicsController.setMovementDirection(0, 0);
+                attackAnimation.setCurrentIndex(0);
+                currentAnimation = attackAnimation;
                 break;
             case HIT:
-                hitAnimation.setAnimationTick(0);
+                hitAnimation.setCurrentIndex(0);
+                currentAnimation = hitAnimation;
                 break;
             case DEATH:
-                deathAnimation.setAnimationTick(0);
+                deathAnimation.setCurrentIndex(0);
+                currentAnimation = deathAnimation;
                 break;
             default:
                 break;

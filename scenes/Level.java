@@ -96,6 +96,7 @@ public class Level extends Scene {
         }
         int[] blankTile = { 11, 13 };
         map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT, blankTile);
+        Enemy.map = map;
         sceneEntities.addToScene(player);
 
         ArrayList<Enemy> enemies = LevelBuilder.generateEnemies(levelData);

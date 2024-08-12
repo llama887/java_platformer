@@ -18,6 +18,7 @@ public abstract class Enemy implements Renderable, Updateable {
     protected float xColliderWidth, yColliderHeight;
     public static final int CRABBY_INDEX = 0;
     public static Player player;
+    public static Tile[][] map;
 
     public Enemy(float x, float y, float speed, float width, float height, float xColliderWidth, float yColliderHeight,
             float xColliderOffset, float yColliderOffset) {
@@ -46,13 +47,23 @@ public abstract class Enemy implements Renderable, Updateable {
     }
 
     public boolean canSeePlayer(float rangeX) {
-        int playerTileY = (int) (player.getPhysicsController().getY() / Game.TILE_SIZE);
-        int enemyTileY = (int) (physicsController.getY() / Game.TILE_SIZE);
+        int playerTileY = (int) (player.getCollider().getHitBox().getY() / Game.TILE_SIZE);
+        int enemyTileY = (int) (collider.getHitBox().getY() / Game.TILE_SIZE);
+        int playerTileX = (int) (player.getCollider().getHitBox().getX() / Game.TILE_SIZE);
+        int enemyTileX = (int) (collider.getHitBox().getX() / Game.TILE_SIZE);
         if (playerTileY != enemyTileY ||
                 Math.abs(player.getPhysicsController().getX() - physicsController.getX()) > rangeX) {
             return false;
         }
-        return true;
+        boolean lineOfSight = false;
+        for (int i = Math.min(playerTileX, enemyTileX); i <= Math.max(playerTileX, enemyTileX); i++) {
+            if (map[playerTileY][i].getCollider().isActive()) {
+                lineOfSight = false;
+                break;
+            }
+            lineOfSight = true;
+        }
+        return lineOfSight;
     }
 
 }

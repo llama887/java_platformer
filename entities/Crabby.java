@@ -2,19 +2,39 @@ package entities;
 
 import java.awt.Graphics;
 import java.nio.Buffer;
+import java.util.Vector;
 
 import components.Animation;
+import components.Collider;
 import main.Game;
+import scenes.Level;
+import utils.Vector2D;
 
 public class Crabby extends Enemy {
     private static final int CRABBY_WIDTH_DEFAULT = 72, CRABBY_HEIGHT_DEFAULT = 32, ANIMATION_SPEED = 30;
     private static final int CRABBY_WIDTH = (int) (CRABBY_WIDTH_DEFAULT * Game.SCALE),
             CRABBY_HEIGHT = (int) (CRABBY_HEIGHT_DEFAULT * Game.SCALE);
+    private static final float COLLIDER_WIDTH = 22 * Game.SCALE, COLLIDER_HEIGHT = 19 * Game.SCALE;
     private Animation idleAnimation, walkAnimation, attackAnimation, hitAnimation, deathAnimation;
     private final String CRABBY_ATLAS = "assets/crabby_sprite.png";
+    private static final int X_COLLIDER_OFFSET = (int) (26 * Game.SCALE), Y_COLLIDER_OFFSET = (int) (9 * Game.SCALE);
+    private boolean isGrounded = false;
+    private Collider groundCollider;
+    private float xGroundedColliderOffset = 0, yGroundedColliderOffset = collider.getHitBox().height + 1;
+    private Collider floorDector;
+    private float xFloorDectorOffset = -1, yFloorDectorOffset = collider.getHitBox().height + 1;
+    private Vector2D lastMovementDirection = new Vector2D(0, 0);
+    private static float SPEED = 1.0f;
+
+    public enum CrabbyState {
+        IDLE, WALK, ATTACK, HIT, DEATH
+    }
+
+    private CrabbyState aiState = CrabbyState.IDLE;
 
     public Crabby(float x, float y) {
-        super(x, y, CRABBY_WIDTH, CRABBY_HEIGHT, CRABBY_WIDTH, CRABBY_HEIGHT, 0, 0);
+        super(x, y, SPEED, CRABBY_WIDTH, CRABBY_HEIGHT, COLLIDER_WIDTH, COLLIDER_HEIGHT, X_COLLIDER_OFFSET,
+                Y_COLLIDER_OFFSET);
         idleAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
                 new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 },
                         { 8, 0 } });
@@ -27,6 +47,36 @@ public class Crabby extends Enemy {
         deathAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
                 new int[][] { { 0, 4 }, { 1, 4 }, { 2, 4 }, { 3, 4 }, { 4, 4 } });
         currentAnimation = idleAnimation;
+        groundCollider = new Collider(collider.getX() + xGroundedColliderOffset,
+                collider.getY() + yGroundedColliderOffset,
+                collider.getHitBox().width, 1);
+        floorDector = new Collider(collider.getX() + xFloorDectorOffset, collider.getY() + yFloorDectorOffset,
+                1, 1);
+        physicsController.setMovementDirection(-1, 0);
+    }
+
+    public Crabby(Enemy enemy) {
+        super(enemy.getPhysicsController().getX(), enemy.getPhysicsController().getY(), SPEED, CRABBY_WIDTH,
+                CRABBY_HEIGHT,
+                COLLIDER_WIDTH, COLLIDER_HEIGHT, X_COLLIDER_OFFSET, Y_COLLIDER_OFFSET);
+        idleAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
+                new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 },
+                        { 8, 0 } });
+        walkAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
+                new int[][] { { 0, 1 }, { 1, 1 }, { 2, 1 }, { 3, 1 }, { 4, 1 }, { 5, 1 } });
+        attackAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
+                new int[][] { { 0, 2 }, { 1, 2 }, { 2, 2 }, { 3, 2 }, { 4, 2 }, { 5, 2 }, { 6, 2 } });
+        hitAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
+                new int[][] { { 0, 3 }, { 1, 3 }, { 2, 3 }, { 3, 3 } });
+        deathAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
+                new int[][] { { 0, 4 }, { 1, 4 }, { 2, 4 }, { 3, 4 }, { 4, 4 } });
+        currentAnimation = idleAnimation;
+        groundCollider = new Collider(collider.getX() + xGroundedColliderOffset,
+                collider.getY() + yGroundedColliderOffset,
+                collider.getHitBox().width, 1);
+        floorDector = new Collider(collider.getX() + xFloorDectorOffset, collider.getY() + yFloorDectorOffset,
+                1, 1);
+        physicsController.setMovementDirection(1, 0);
     }
 
     @Override
@@ -43,13 +93,96 @@ public class Crabby extends Enemy {
                 (int) physicsController.getWidth(),
                 (int) physicsController.getHeight(),
                 null);
+        collider.drawHitBox(g, xLevelOffset, yLevelOffset);
+        groundCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
+        floorDector.drawHitBox(g, xLevelOffset, yLevelOffset);
     }
 
     @Override
     public void update() {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'update'");
+        float initialX = physicsController.getX();
+        float initialY = physicsController.getY();
+        physicsController.unblockAllMovement();
+        physicsController.getAcceleration().setY(Level.GRAVITY);
+        switch (aiState) {
+            case IDLE:
+                aiState = CrabbyState.WALK;
+                break;
+            case WALK:
+                break;
+            default:
+                break;
+        }
+        if (physicsController.getMovementDirection().getX() > 0) {
+            xFloorDectorOffset = collider.getHitBox().width + 1;
+        } else if (physicsController.getMovementDirection().getX() < 0) {
+            xFloorDectorOffset = -1;
+        }
+        if (!floorDector.checkCollision()) {
+            physicsController.getMovementDirection().setX(physicsController.getMovementDirection().getX() * -1);
+        }
+        Vector2D testPosition = physicsController.testYUpdate();
+        collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
+        if (!collider.checkCollision()) {
+            physicsController.yUpdate();
+        } else {
+            collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset, yColliderOffset);
+            float deltaY = testPosition.getY() - physicsController.getY();
+            try {
+                Vector2D distanceToNearestCollider = collider.distanceToNextCollider(new Vector2D(0, deltaY));
+                physicsController.setY(physicsController.getY() +
+                        distanceToNearestCollider.getY());
+                if (distanceToNearestCollider.getY() != 0) {
+                    physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
+                }
+                collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
+                        yColliderOffset);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        testPosition = physicsController.testXUpdate();
+        collider.moveHitBox(testPosition.getX(), testPosition.getY(), xColliderOffset, yColliderOffset);
+        if (!collider.checkCollision()) {
+            physicsController.xUpdate();
+        } else {
+            float deltaX = testPosition.getX() - physicsController.getX();
+            collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset, yColliderOffset);
+            try {
+                Vector2D distanceToNearestCollider = collider.distanceToNextCollider(new Vector2D(deltaX, 0));
+                physicsController.setX(physicsController.getX() +
+                        distanceToNearestCollider.getX());
+                if (distanceToNearestCollider.getX() != 0) {
+                    physicsController.setVelocity(new Vector2D(physicsController.getVelocity().getX(), 0));
+                }
+                collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset,
+                        yColliderOffset);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        isGrounded = groundCollider.checkCollision();
+        collider.moveHitBox(physicsController.getX(), physicsController.getY(), xColliderOffset, yColliderOffset);
+        groundCollider.moveHitBox(collider.getX(), collider.getY(),
+                xGroundedColliderOffset, yGroundedColliderOffset);
+        floorDector.moveHitBox(collider.getX(), collider.getY(), xFloorDectorOffset, yFloorDectorOffset);
+        lastMovementDirection = new Vector2D(physicsController.getX() - initialX, physicsController.getY() - initialY);
         return;
     }
 
+    public Collider getGroundCollider() {
+        return groundCollider;
+    }
+
+    public void setGroundCollider(Collider groundCollider) {
+        this.groundCollider = groundCollider;
+    }
+
+    public Collider getFloorDector() {
+        return floorDector;
+    }
+
+    public void setFloorDector(Collider floorDector) {
+        this.floorDector = floorDector;
+    }
 }

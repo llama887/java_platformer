@@ -15,6 +15,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import components.SceneEntities;
+import entities.Crabby;
 import entities.Enemy;
 import entities.Player;
 import entities.Tile;
@@ -58,7 +59,7 @@ public class Level extends Scene {
             Game.SCALE);
     private int[] smallCloudPositionsY;
     private Random random = new Random();
-    private ArrayList<Enemy> enemies = new ArrayList<>();
+    private ArrayList<Crabby> crabbies = new ArrayList<>();
 
     public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
@@ -96,17 +97,26 @@ public class Level extends Scene {
         int[] blankTile = { 11, 13 };
         map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT, blankTile);
         sceneEntities.addToScene(player);
+
+        ArrayList<Enemy> enemies = LevelBuilder.generateEnemies(levelData);
+        for (Enemy enemy : enemies) {
+            crabbies.add(new Crabby(enemy));
+        }
+        for (Crabby enemy : crabbies) {
+            sceneEntities.addToScene(enemy);
+        }
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
                 if (map[y][x].getCollider().isActive()) {
                     player.getCollider().addOtherCollider(map[y][x].getCollider());
                     player.getGroundCollider().addOtherCollider(map[y][x].getCollider());
+                    for (Crabby enemy : crabbies) {
+                        enemy.getCollider().addOtherCollider(map[y][x].getCollider());
+                        enemy.getGroundCollider().addOtherCollider(map[y][x].getCollider());
+                        enemy.getFloorDector().addOtherCollider(map[y][x].getCollider());
+                    }
                 }
             }
-        }
-        enemies = LevelBuilder.generateEnemies(levelData);
-        for (Enemy enemy : enemies) {
-            sceneEntities.addToScene(enemy);
         }
         MAX_WIDTH_IN_TILES = map[0].length;
         MAX_WIDTH = MAX_WIDTH_IN_TILES * Game.SCALE;

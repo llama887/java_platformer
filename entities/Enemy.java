@@ -17,9 +17,9 @@ public abstract class Enemy implements Renderable, Updateable {
     protected float xColliderWidth, yColliderHeight;
     public static final int CRABBY_INDEX = 0;
 
-    public Enemy(float x, float y, float width, float height, float xColliderWidth, float yColliderHeight,
+    public Enemy(float x, float y, float speed, float width, float height, float xColliderWidth, float yColliderHeight,
             float xColliderOffset, float yColliderOffset) {
-        physicsController = new PhysicsController(x, y, 0, width, height);
+        physicsController = new PhysicsController(x, y, speed, width, height);
         collider = new Collider(x + xColliderOffset, y + yColliderOffset, xColliderWidth, yColliderHeight);
         this.xColliderOffset = xColliderOffset;
         this.yColliderOffset = yColliderOffset;
@@ -42,4 +42,5 @@ public abstract class Enemy implements Renderable, Updateable {
     public void setPhysicsController(PhysicsController physicsController) {
         this.physicsController = physicsController;
     }
+
 }

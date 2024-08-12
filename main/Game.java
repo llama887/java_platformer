@@ -39,7 +39,7 @@ public class Game implements Runnable {
 
     public void initialize() {
         menu = new Menu(gamePanel);
-        Player player = new Player(100, 200, 1.1f, Game.SCALE * 64, Game.SCALE * 40);
+        Player player = new Player(100, 200, 0.75f);
         level1 = new Level(player, 0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data_long.png",
                 gamePanel);
         Game.changeScene(menu, gamePanel);

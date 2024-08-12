@@ -15,6 +15,7 @@ import utils.Vector2D;
 
 public class Player implements Renderable, Updateable {
     private final int SPRITE_WIDTH = 64, SPRITE_HEIGHT = 40, ANIMATION_SPEED = 30;
+    private final float PLAYER_WIDTH = 64 * Game.SCALE, PLAYER_HEIGHT = 40 * Game.SCALE;
     private final String PLAYER_ATLAS = "assets/player_sprites.png";
     private Animation idleAnimation, runAnimation, jumpAnimation, fallingAnimation, groundAnimation, hitAnimation,
             attack1Animation, jumpAttack1Animation, jumpAttack2Animation;
@@ -32,8 +33,8 @@ public class Player implements Renderable, Updateable {
     private final float fastFall = 0.1f * Game.SCALE;
     private Vector2D lastMovementDirection = new Vector2D(0, 0);
 
-    public Player(float x, float y, float speed, float width, float height) {
-        physicsController = new PhysicsController(x, y, speed, width, height);
+    public Player(float x, float y, float speed) {
+        physicsController = new PhysicsController(x, y, speed * Game.SCALE, PLAYER_WIDTH, PLAYER_HEIGHT);
         physicsController.setAcceleration(new Vector2D(0, Level.GRAVITY));
         collider = new Collider(x + xColliderOffset, y + yColliderOffset, xColliderWidth, yColliderHeight);
         xGroundedColliderOffset = 0;

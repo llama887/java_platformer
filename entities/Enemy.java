@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import components.Animation;
 import components.Collider;
 import components.PhysicsController;
+import main.Game;
 import utils.Renderable;
 import utils.Updateable;
 
@@ -16,6 +17,7 @@ public abstract class Enemy implements Renderable, Updateable {
     protected float xColliderOffset, yColliderOffset;
     protected float xColliderWidth, yColliderHeight;
     public static final int CRABBY_INDEX = 0;
+    public static Player player;
 
     public Enemy(float x, float y, float speed, float width, float height, float xColliderWidth, float yColliderHeight,
             float xColliderOffset, float yColliderOffset) {
@@ -41,6 +43,16 @@ public abstract class Enemy implements Renderable, Updateable {
 
     public void setPhysicsController(PhysicsController physicsController) {
         this.physicsController = physicsController;
+    }
+
+    public boolean canSeePlayer(float rangeX) {
+        int playerTileY = (int) (player.getPhysicsController().getY() / Game.TILE_SIZE);
+        int enemyTileY = (int) (physicsController.getY() / Game.TILE_SIZE);
+        if (playerTileY != enemyTileY ||
+                Math.abs(player.getPhysicsController().getX() - physicsController.getX()) > rangeX) {
+            return false;
+        }
+        return true;
     }
 
 }

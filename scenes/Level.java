@@ -29,7 +29,7 @@ public class Level extends Scene {
     public static float GRAVITY;
     private BufferedImage levelData = null;
     private Tile[][] map;
-    private Player player = new Player(100, 200, 1f, Game.SCALE * 64, Game.SCALE * 40);
+    private Player player;
     private boolean key_w, key_s, key_a, key_d, key_space, key_enter;
     private boolean paused;
     private PauseOverlay pauseOverlay;
@@ -105,6 +105,7 @@ public class Level extends Scene {
         for (Crabby enemy : crabbies) {
             sceneEntities.addToScene(enemy);
         }
+        Enemy.player = player;
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
                 if (map[y][x].getCollider().isActive()) {
@@ -112,7 +113,6 @@ public class Level extends Scene {
                     player.getGroundCollider().addOtherCollider(map[y][x].getCollider());
                     for (Crabby enemy : crabbies) {
                         enemy.getCollider().addOtherCollider(map[y][x].getCollider());
-                        enemy.getGroundCollider().addOtherCollider(map[y][x].getCollider());
                         enemy.getFloorDector().addOtherCollider(map[y][x].getCollider());
                     }
                 }

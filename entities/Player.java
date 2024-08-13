@@ -32,6 +32,8 @@ public class Player implements Renderable, Updateable {
     private final float jumpForce = -0.75f * Game.SCALE;
     private final float fastFall = 0.1f * Game.SCALE;
     private Vector2D lastMovementDirection = new Vector2D(0, 0);
+    private final int MAX_HEALTH = 100;
+    private int health = MAX_HEALTH;
 
     public Player(float x, float y, float speed) {
         physicsController = new PhysicsController(x, y, speed * Game.SCALE, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -176,5 +178,21 @@ public class Player implements Renderable, Updateable {
 
     public void setFastFalling(boolean isFastFalling) {
         this.isFastFalling = isFastFalling;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxHealth() {
+        return MAX_HEALTH;
+    }
+
+    public void takeDamage(int damage) {
+        health -= damage;
     }
 }

@@ -119,7 +119,7 @@ public class Level extends Scene {
                 }
             }
         }
-        status = new StatusBar();
+        status = new StatusBar(player);
         sceneEntities.addToScene(status);
         MAX_WIDTH_IN_TILES = map[0].length;
         MAX_WIDTH = MAX_WIDTH_IN_TILES * Game.SCALE;

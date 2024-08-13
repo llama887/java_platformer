@@ -30,7 +30,7 @@ public class Level extends Scene {
     private BufferedImage levelData = null;
     private Tile[][] map;
     private Player player;
-    private boolean key_w, key_s, key_a, key_d, key_space, key_enter;
+    private boolean key_w, key_s, key_a, key_d, key_space, key_enter, key_j;
     private boolean paused;
     private PauseOverlay pauseOverlay;
     private final float MAX_WIDTH, MAX_HEIGHT;
@@ -159,6 +159,9 @@ public class Level extends Scene {
                     case KeyEvent.VK_D:
                         key_d = true;
                         break;
+                    case KeyEvent.VK_J:
+                        key_j = true;
+                        break;
                     case KeyEvent.VK_SPACE:
                         key_space = true;
                         break;
@@ -191,6 +194,9 @@ public class Level extends Scene {
                     case KeyEvent.VK_RIGHT:
                     case KeyEvent.VK_D:
                         key_d = false;
+                        break;
+                    case KeyEvent.VK_J:
+                        key_j = false;
                         break;
                     case KeyEvent.VK_SPACE:
                         key_space = false;
@@ -258,6 +264,9 @@ public class Level extends Scene {
         }
         if (key_enter) {
             paused = true;
+        }
+        if (key_j) {
+            player.setAttacking(true);
         }
         player.getPhysicsController()
                 .setMovementDirection(playerXDirection, playerYDirection);

@@ -45,7 +45,7 @@ public class StatusBar implements Renderable, Updateable {
     public void render(Graphics g, int xLevelOffset_UNUSED, int yLevelOffset_UNUSED) {
         g.drawImage(statusBar, statusBarX, statusBarY, STATUS_BAR_WIDTH, STATUS_BAR_HEIGHT, null);
         g.setColor(Color.RED);
-        g.fillRect(HEALTH_BAR_X_START + statusBarX, HEALTH_BAR_Y_START + statusBarY, HEALTH_BAR_WIDTH,
+        g.fillRect(HEALTH_BAR_X_START + statusBarX, HEALTH_BAR_Y_START + statusBarY, currentHealthBarWidth,
                 HEALTH_BAR_HEIGHT);
     }
 }

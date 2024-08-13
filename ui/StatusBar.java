@@ -1,0 +1,45 @@
+package ui;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+
+import main.Game;
+import utils.Renderable;
+import utils.Updateable;
+
+public class StatusBar implements Renderable, Updateable {
+    private final int STATUS_BAR_WIDTH = (int) (192 * Game.SCALE);
+    private final int STATUS_BAR_HEIGHT = (int) (58 * Game.SCALE);
+    private final int statusBarX = (int) (10 * Game.SCALE);
+    private final int statusBarY = (int) (10 * Game.SCALE);
+    private int healthBarWidth = (int) (150 * Game.SCALE);
+    private final int HEALTH_BAR_HEIGHT = (int) (4 * Game.SCALE);
+    private final int HEALTH_BAR_X_START = (int) (34 * Game.SCALE);
+    private final int HEALTH_BAR_Y_START = (int) (14 * Game.SCALE);
+    private final String STATUS_BAR_PATH = "assets/health_power_bar.png";
+    private BufferedImage statusBar;
+
+    public StatusBar() {
+        try {
+            statusBar = ImageIO.read(new File(STATUS_BAR_PATH));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void update() {
+        return;
+    }
+
+    @Override
+    public void render(Graphics g, int xLevelOffset_UNUSED, int yLevelOffset_UNUSED) {
+        g.drawImage(statusBar, statusBarX, statusBarY, STATUS_BAR_WIDTH, STATUS_BAR_HEIGHT, null);
+        g.setColor(Color.RED);
+        g.fillRect(HEALTH_BAR_X_START, HEALTH_BAR_Y_START, healthBarWidth, HEALTH_BAR_HEIGHT);
+    }
+}

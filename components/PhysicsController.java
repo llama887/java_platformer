@@ -264,4 +264,22 @@ public class PhysicsController {
         canMoveLeft = true;
         canMoveRight = true;
     }
+
+    @Override
+    public String toString() {
+        return "PhysicsController{" +
+                "x=" + x +
+                ", y=" + y +
+                ", speed=" + speed +
+                ", width=" + width +
+                ", height=" + height +
+                ", movementDirection=" + movementDirection +
+                ", velocity=" + velocity +
+                ", acceleration=" + acceleration +
+                ", canMoveUp=" + canMoveUp +
+                ", canMoveDown=" + canMoveDown +
+                ", canMoveLeft=" + canMoveLeft +
+                ", canMoveRight=" + canMoveRight +
+                '}';
+    }
 }

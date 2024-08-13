@@ -5,6 +5,7 @@ import components.Collider;
 import components.PhysicsController;
 import main.Game;
 import scenes.Level;
+import ui.StatusBar;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -27,7 +28,6 @@ public class Player implements Renderable, Updateable {
     private float xColliderOffset = 22 * Game.SCALE, yColliderOffset = 3 * Game.SCALE;
     private float xColliderWidth = 18 * Game.SCALE, yColliderHeight = 28 * Game.SCALE;
     private float xGroundedColliderOffset = 28 * Game.SCALE, yGroundedColliderOffset = 5 * Game.SCALE;
-
     private boolean jump = false, isGrounded = false, isFastFalling = false;
     private final float jumpForce = -0.75f * Game.SCALE;
     private final float fastFall = 0.1f * Game.SCALE;

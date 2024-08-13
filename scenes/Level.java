@@ -8,7 +8,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -22,6 +21,7 @@ import entities.Tile;
 import main.Game;
 import main.GamePanel;
 import ui.PauseOverlay;
+import ui.StatusBar;
 
 import java.awt.event.MouseEvent;
 
@@ -60,6 +60,7 @@ public class Level extends Scene {
     private int[] smallCloudPositionsY;
     private Random random = new Random();
     private ArrayList<Crabby> crabbies = new ArrayList<>();
+    private StatusBar status;
 
     public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
@@ -98,7 +99,6 @@ public class Level extends Scene {
         map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT, blankTile);
         Enemy.map = map;
         sceneEntities.addToScene(player);
-
         ArrayList<Enemy> enemies = LevelBuilder.generateEnemies(levelData);
         for (Enemy enemy : enemies) {
             crabbies.add(new Crabby(enemy));
@@ -119,6 +119,8 @@ public class Level extends Scene {
                 }
             }
         }
+        status = new StatusBar();
+        sceneEntities.addToScene(status);
         MAX_WIDTH_IN_TILES = map[0].length;
         MAX_WIDTH = MAX_WIDTH_IN_TILES * Game.SCALE;
         MAX_HEIGHT_IN_TILES = map.length;

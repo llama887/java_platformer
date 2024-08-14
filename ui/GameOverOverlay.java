@@ -13,6 +13,6 @@ public class GameOverOverlay implements Renderable {
         g.fillRect(0, 0, Game.GAME_HEIGHT, Game.GAME_HEIGHT);
         g.setColor(Color.WHITE);
         g.drawString("Game Over", Game.GAME_WIDTH / 2, 150);
-        g.drawString("press ENTER to enter Main Menu", Game.GAME_WIDTH / 2, 300);
+        g.drawString("press esc to enter Main Menu", Game.GAME_WIDTH / 2, 300);
     }
 }

@@ -274,7 +274,7 @@ public class Level extends Scene {
         if (key_j) {
             player.setAttacking(true);
         }
-        if (key_esc && player.getHealth() <= 0) {
+        if (key_esc && player.isDead()) {
             Game.changeScene(Game.menu, gamePanel);
         }
         player.getPhysicsController()

@@ -40,8 +40,7 @@ public class Player implements Renderable, Updateable {
             LEFT_ATTACK_COLLIDER_OFFSET = -COLLIDER_WIDTH - 10 * Game.SCALE,
             ATTACK_COLLIDER_Y_OFFSET = 10 * Game.SCALE;
     private float xAttackColliderOffset = LEFT_ATTACK_COLLIDER_OFFSET;
-    private boolean attacking = false;
-    private boolean facingRight = true;
+    private boolean attacking = false, facingRight = true, dead = false;
 
     public Player(float x, float y, float speed) {
         physicsController = new PhysicsController(x, y, speed * Game.SCALE, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -72,6 +71,9 @@ public class Player implements Renderable, Updateable {
 
     @Override
     public void update() {
+        if (health <= 0) {
+            return;
+        }
         if (lastMovementDirection.getX() > 0) {
             xAttackColliderOffset = RIGHT_ATTACK_COLLIDER_OFFSET;
             facingRight = true;
@@ -149,33 +151,47 @@ public class Player implements Renderable, Updateable {
 
     @Override
     public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
-        if (attacking) {
-            currentAnimation = attackAnimation;
-            attacking = !currentAnimation.isLastFrame();
-        } else if (lastMovementDirection.magnitude() == 0) {
-            currentAnimation = idleAnimation;
-        } else if (lastMovementDirection.getY() < 0 && !isGrounded) {
-            currentAnimation = jumpAnimation;
-        } else if (lastMovementDirection.getY() > 0) {
-            currentAnimation = fallingAnimation;
-        } else if (Math.abs(lastMovementDirection.getX()) > 0) {
-            currentAnimation = runAnimation;
+        if (dead) {
+            g.drawImage(deathAnimation.getFrame(deathAnimation.getAnimationLength() - 1),
+                    (int) (physicsController.getX() - xLevelOffset + (facingRight ? 0 : PLAYER_WIDTH)),
+                    (int) (physicsController.getY() - yLevelOffset),
+                    (int) physicsController.getWidth() * (facingRight ? 1 : -1),
+                    (int) physicsController.getHeight(),
+                    null);
+        } else {
+            if (health <= 0) {
+                currentAnimation = deathAnimation;
+                if (currentAnimation.isLastFrame()) {
+                    dead = true;
+                }
+            } else if (attacking) {
+                currentAnimation = attackAnimation;
+                attacking = !currentAnimation.isLastFrame();
+            } else if (lastMovementDirection.magnitude() == 0) {
+                currentAnimation = idleAnimation;
+            } else if (lastMovementDirection.getY() < 0 && !isGrounded) {
+                currentAnimation = jumpAnimation;
+            } else if (lastMovementDirection.getY() > 0) {
+                currentAnimation = fallingAnimation;
+            } else if (Math.abs(lastMovementDirection.getX()) > 0) {
+                currentAnimation = runAnimation;
+            }
+            if (currentAnimation.getAnimationTick() >= currentAnimation.getAnimationSpeed()) {
+                currentAnimation.nextFrame();
+                currentFrame = currentAnimation.getFrame();
+                currentAnimation.setAnimationTick(0);
+            }
+            currentAnimation.setAnimationTick(currentAnimation.getAnimationTick() + 1);
+            g.drawImage(currentFrame,
+                    (int) (physicsController.getX() - xLevelOffset + (facingRight ? 0 : PLAYER_WIDTH)),
+                    (int) (physicsController.getY() - yLevelOffset),
+                    (int) physicsController.getWidth() * (facingRight ? 1 : -1),
+                    (int) physicsController.getHeight(),
+                    null);
+            collider.drawHitBox(g, xLevelOffset, yLevelOffset);
+            groundCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
+            attackCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
         }
-        if (currentAnimation.getAnimationTick() >= currentAnimation.getAnimationSpeed()) {
-            currentAnimation.nextFrame();
-            currentFrame = currentAnimation.getFrame();
-            currentAnimation.setAnimationTick(0);
-        }
-        currentAnimation.setAnimationTick(currentAnimation.getAnimationTick() + 1);
-        g.drawImage(currentFrame,
-                (int) (physicsController.getX() - xLevelOffset + (facingRight ? 0 : PLAYER_WIDTH)),
-                (int) (physicsController.getY() - yLevelOffset),
-                (int) physicsController.getWidth() * (facingRight ? 1 : -1),
-                (int) physicsController.getHeight(),
-                null);
-        collider.drawHitBox(g, xLevelOffset, yLevelOffset);
-        groundCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
-        attackCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
     }
 
     public PhysicsController getPhysicsController() {
@@ -220,5 +236,9 @@ public class Player implements Renderable, Updateable {
 
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 }

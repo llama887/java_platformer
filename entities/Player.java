@@ -31,7 +31,7 @@ public class Player implements Renderable, Updateable {
     private boolean jump = false, isGrounded = false, isFastFalling = false;
     private final float JUMP_FORCE = -0.75f * Game.SCALE;
     private final float FAST_FALL = 0.1f * Game.SCALE;
-    private Vector2D lastUpdateDirection = new Vector2D(0, 0);
+    private Vector2D lastMovementDirection = new Vector2D(0, 0);
     private final int MAX_HEALTH = 100;
     private int health = MAX_HEALTH;
     private Collider attackCollider;
@@ -72,10 +72,10 @@ public class Player implements Renderable, Updateable {
 
     @Override
     public void update() {
-        if (lastUpdateDirection.getX() > 0) {
+        if (lastMovementDirection.getX() > 0) {
             xAttackColliderOffset = RIGHT_ATTACK_COLLIDER_OFFSET;
             facingRight = true;
-        } else if (lastUpdateDirection.getX() < 0) {
+        } else if (lastMovementDirection.getX() < 0) {
             xAttackColliderOffset = LEFT_ATTACK_COLLIDER_OFFSET;
             facingRight = false;
         }
@@ -144,7 +144,7 @@ public class Player implements Renderable, Updateable {
         groundCollider.moveHitBox(collider.getX(), collider.getY(), GROUNDED_COLLIDER_X_OFFSET,
                 GROUNDED_COLLIDER_Y_OFFSET);
         attackCollider.moveHitBox(collider.getX(), collider.getY(), xAttackColliderOffset, ATTACK_COLLIDER_Y_OFFSET);
-        lastUpdateDirection.set(physicsController.getX() - initialX, physicsController.getY() - initialY);
+        lastMovementDirection.set(physicsController.getX() - initialX, physicsController.getY() - initialY);
     }
 
     @Override
@@ -152,13 +152,13 @@ public class Player implements Renderable, Updateable {
         if (attacking) {
             currentAnimation = attackAnimation;
             attacking = !currentAnimation.isLastFrame();
-        } else if (lastUpdateDirection.magnitude() == 0) {
+        } else if (lastMovementDirection.magnitude() == 0) {
             currentAnimation = idleAnimation;
-        } else if (lastUpdateDirection.getY() < 0 && !isGrounded) {
+        } else if (lastMovementDirection.getY() < 0 && !isGrounded) {
             currentAnimation = jumpAnimation;
-        } else if (lastUpdateDirection.getY() > 0) {
+        } else if (lastMovementDirection.getY() > 0) {
             currentAnimation = fallingAnimation;
-        } else if (Math.abs(lastUpdateDirection.getX()) > 0) {
+        } else if (Math.abs(lastMovementDirection.getX()) > 0) {
             currentAnimation = runAnimation;
         }
         if (currentAnimation.getAnimationTick() >= currentAnimation.getAnimationSpeed()) {

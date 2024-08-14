@@ -26,6 +26,7 @@ public class Crabby extends Enemy {
     private float sightRangeX = 200 * Game.SCALE;
     private float attackRangeX = 30 * Game.SCALE;
     private Collider attackCollider;
+    private boolean facingLeft = true;
 
     public enum CrabbyState {
         IDLE, WALK, ATTACK, HIT, DEATH
@@ -87,9 +88,9 @@ public class Crabby extends Enemy {
         }
         currentAnimation.setAnimationTick(currentAnimation.getAnimationTick() + 1);
 
-        g.drawImage(currentFrame, (int) physicsController.getX() - xLevelOffset,
+        g.drawImage(currentFrame, (int) physicsController.getX() - xLevelOffset + (facingLeft ? 0 : CRABBY_WIDTH),
                 (int) physicsController.getY() - yLevelOffset,
-                (int) physicsController.getWidth(),
+                (int) physicsController.getWidth() * (facingLeft ? 1 : -1),
                 (int) physicsController.getHeight(),
                 null);
         collider.drawHitBox(g, xLevelOffset, yLevelOffset);
@@ -106,6 +107,11 @@ public class Crabby extends Enemy {
                 aiState = CrabbyState.WALK;
                 break;
             case WALK:
+                if (lastMovementDirection.getX() > 0) {
+                    facingLeft = false;
+                } else if (lastMovementDirection.getX() < 0) {
+                    facingLeft = true;
+                }
                 if (canSeePlayer(sightRangeX)) {
                     physicsController
                             .setMovementDirection(

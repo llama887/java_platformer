@@ -26,7 +26,9 @@ public class Crabby extends Enemy {
     private float sightRangeX = 200 * Game.SCALE;
     private float attackRangeX = 30 * Game.SCALE;
     private Collider attackCollider;
-    private boolean facingLeft = true;
+    private final int ATTACK_COLLIDER_X_OFFSET = (int) (Game.SCALE * -30),
+            ATTACK_COLLIDER_WIDTH = (int) (82 * Game.SCALE), ATTACK_COLLIDER_HEIGHT = (int) COLLIDER_HEIGHT;
+    private boolean facingLeft = true, addedPlayerHitbox = false, playerDamaged = false;
 
     public enum CrabbyState {
         IDLE, WALK, ATTACK, HIT, DEATH
@@ -52,28 +54,12 @@ public class Crabby extends Enemy {
         floorDector = new Collider(collider.getX() + xFloorDectorOffset, collider.getY() + yFloorDectorOffset,
                 1, 1);
         physicsController.setMovementDirection(-1, 0);
+        attackCollider = new Collider(collider.getX() + ATTACK_COLLIDER_X_OFFSET, collider.getY(),
+                ATTACK_COLLIDER_WIDTH, ATTACK_COLLIDER_HEIGHT);
     }
 
     public Crabby(Enemy enemy) {
-        super(enemy.getPhysicsController().getX(), enemy.getPhysicsController().getY(), SPEED * Game.SCALE,
-                CRABBY_WIDTH,
-                CRABBY_HEIGHT,
-                COLLIDER_WIDTH, COLLIDER_HEIGHT, X_COLLIDER_OFFSET, Y_COLLIDER_OFFSET);
-        idleAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
-                new int[][] { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 },
-                        { 8, 0 } });
-        walkAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
-                new int[][] { { 0, 1 }, { 1, 1 }, { 2, 1 }, { 3, 1 }, { 4, 1 }, { 5, 1 } });
-        attackAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
-                new int[][] { { 0, 2 }, { 1, 2 }, { 2, 2 }, { 3, 2 }, { 4, 2 }, { 5, 2 }, { 6, 2 } });
-        hitAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
-                new int[][] { { 0, 3 }, { 1, 3 }, { 2, 3 }, { 3, 3 } });
-        deathAnimation = new Animation(CRABBY_ATLAS, ANIMATION_SPEED, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT,
-                new int[][] { { 0, 4 }, { 1, 4 }, { 2, 4 }, { 3, 4 }, { 4, 4 } });
-        currentAnimation = idleAnimation;
-        floorDector = new Collider(collider.getX() + xFloorDectorOffset, collider.getY() + yFloorDectorOffset,
-                1, 1);
-        physicsController.setMovementDirection(-1, 0);
+        this(enemy.getPhysicsController().getX(), enemy.getPhysicsController().getY());
     }
 
     @Override
@@ -95,10 +81,18 @@ public class Crabby extends Enemy {
                 null);
         collider.drawHitBox(g, xLevelOffset, yLevelOffset);
         floorDector.drawHitBox(g, xLevelOffset, yLevelOffset);
+        attackCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
     }
 
     @Override
     public void update() {
+        if (!addedPlayerHitbox) {
+            attackCollider.addOtherCollider(player.getCollider());
+            addedPlayerHitbox = true;
+        }
+        if (aiState != CrabbyState.ATTACK) {
+            playerDamaged = false;
+        }
         float initialX = physicsController.getX();
         float initialY = physicsController.getY();
         physicsController.unblockAllMovement();
@@ -179,6 +173,7 @@ public class Crabby extends Enemy {
                 floorDector.moveHitBox(collider.getX(), collider.getY(), xFloorDectorOffset, yFloorDectorOffset);
                 lastMovementDirection = new Vector2D(physicsController.getX() - initialX,
                         physicsController.getY() - initialY);
+                attackCollider.moveHitBox(collider.getX(), collider.getY(), ATTACK_COLLIDER_X_OFFSET, 0);
                 if (canSeePlayer(attackRangeX)) {
                     setAiState(CrabbyState.ATTACK);
                     break;
@@ -188,6 +183,10 @@ public class Crabby extends Enemy {
                 physicsController.setVelocity(new Vector2D(0.0f, 0.0f));
                 if (attackAnimation.isLastFrame()) {
                     setAiState(CrabbyState.WALK);
+                }
+                if (attackCollider.checkCollision() && attackAnimation.getCurrentIndex() == 3 && !playerDamaged) {
+                    player.takeDamage(10);
+                    playerDamaged = true;
                 }
                 break;
             default:

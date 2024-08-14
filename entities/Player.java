@@ -167,7 +167,6 @@ public class Player implements Renderable, Updateable {
             currentAnimation.setAnimationTick(0);
         }
         currentAnimation.setAnimationTick(currentAnimation.getAnimationTick() + 1);
-        System.out.println((facingRight ? 0 : PLAYER_WIDTH));
         g.drawImage(currentFrame,
                 (int) (physicsController.getX() - xLevelOffset + (facingRight ? 0 : PLAYER_WIDTH)),
                 (int) (physicsController.getY() - yLevelOffset),

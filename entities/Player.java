@@ -36,11 +36,12 @@ public class Player implements Renderable, Updateable {
     private int health = MAX_HEALTH;
     private Collider attackCollider;
     private final int ATTACK_COLLIDER_WIDTH = (int) (20 * Game.SCALE), ATTACK_COLLIDER_HEIGHT = (int) (20 * Game.SCALE);
-    private final float LEFT_ATTACK_COLLIDER_OFFSET = COLLIDER_WIDTH + 10 * Game.SCALE,
-            RIGHT_ATTACK_COLLIDER_OFFSET = -COLLIDER_WIDTH - 10 * Game.SCALE,
+    private final float RIGHT_ATTACK_COLLIDER_OFFSET = COLLIDER_WIDTH + 10 * Game.SCALE,
+            LEFT_ATTACK_COLLIDER_OFFSET = -COLLIDER_WIDTH - 10 * Game.SCALE,
             ATTACK_COLLIDER_Y_OFFSET = 10 * Game.SCALE;
     private float xAttackColliderOffset = LEFT_ATTACK_COLLIDER_OFFSET;
     private boolean attacking = false;
+    private boolean facingRight = true;
 
     public Player(float x, float y, float speed) {
         physicsController = new PhysicsController(x, y, speed * Game.SCALE, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -71,10 +72,12 @@ public class Player implements Renderable, Updateable {
 
     @Override
     public void update() {
-        if (lastUpdateDirection.getX() < 0) {
+        if (lastUpdateDirection.getX() > 0) {
             xAttackColliderOffset = RIGHT_ATTACK_COLLIDER_OFFSET;
-        } else if (lastUpdateDirection.getX() > 0) {
+            facingRight = true;
+        } else if (lastUpdateDirection.getX() < 0) {
             xAttackColliderOffset = LEFT_ATTACK_COLLIDER_OFFSET;
+            facingRight = false;
         }
         float initialX = physicsController.getX();
         float initialY = physicsController.getY();
@@ -164,10 +167,11 @@ public class Player implements Renderable, Updateable {
             currentAnimation.setAnimationTick(0);
         }
         currentAnimation.setAnimationTick(currentAnimation.getAnimationTick() + 1);
-
-        g.drawImage(currentFrame, (int) physicsController.getX() - xLevelOffset,
-                (int) physicsController.getY() - yLevelOffset,
-                (int) physicsController.getWidth(),
+        System.out.println((facingRight ? 0 : PLAYER_WIDTH));
+        g.drawImage(currentFrame,
+                (int) (physicsController.getX() - xLevelOffset + (facingRight ? 0 : PLAYER_WIDTH)),
+                (int) (physicsController.getY() - yLevelOffset),
+                (int) physicsController.getWidth() * (facingRight ? 1 : -1),
                 (int) physicsController.getHeight(),
                 null);
         collider.drawHitBox(g, xLevelOffset, yLevelOffset);

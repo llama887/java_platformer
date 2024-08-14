@@ -85,6 +85,9 @@ public class LevelCompletedOverlay extends Scene {
         if (menuButton.getButtonState() == ButtonState.ACTIVATED) {
             Game.changeScene(Game.menu, gamePanel);
         }
+        if (nextButton.getButtonState() == ButtonState.ACTIVATED) {
+            Game.changeScene(level.getNextScene(), gamePanel);
+        }
         Button.resetMouseStates();
     }
 

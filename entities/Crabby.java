@@ -98,7 +98,6 @@ public class Crabby extends Enemy {
             playerDamaged = false;
         }
         if (collider.checkCollision(player.getAttackCollider())) {
-            System.out.println("Crabby hit by player");
             setAiState(CrabbyState.HIT);
         }
         float initialX = physicsController.getX();

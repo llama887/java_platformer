@@ -25,6 +25,9 @@ public class Game implements Runnable {
 
     public static Menu menu;
     public static Level level1;
+    public static Level level2;
+    public static Level level3;
+    public static Level[] levels = { level1, level2, level3 };
     public static Optional<Scene> currentScene = Optional.empty();
 
     public Game() {
@@ -41,6 +44,13 @@ public class Game implements Runnable {
         menu = new Menu(gamePanel);
         level1 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data_long.png",
                 gamePanel);
+        level2 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data_long.png",
+                gamePanel);
+        level3 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data_long.png",
+                gamePanel);
+        level1.setNextScene(level2);
+        level2.setNextScene(level3);
+        level3.setNextScene(menu);
         Game.changeScene(menu, gamePanel);
     }
 

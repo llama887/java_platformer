@@ -8,12 +8,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Random;
-
 import javax.imageio.ImageIO;
-
 import components.SceneEntities;
 import entities.Crabby;
 import entities.Enemy;
@@ -68,6 +65,7 @@ public class Level extends Scene {
     private String levelAtlasPath, levelDataPath;
     private BufferedImage levelAtlas;
     private LevelCompletedOverlay levelCompletedOverlay;
+    private Scene nextScene;
 
     public Level(float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
@@ -403,5 +401,13 @@ public class Level extends Scene {
 
     public void setPaused(boolean paused) {
         this.paused = paused;
+    }
+
+    public void setNextScene(Scene nextLevel) {
+        this.nextScene = nextLevel;
+    }
+
+    public Scene getNextScene() {
+        return nextScene;
     }
 }

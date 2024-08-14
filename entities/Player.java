@@ -178,7 +178,6 @@ public class Player implements Renderable, Updateable {
                 if (!attacking) {
                     currentAnimation.setCurrentIndex(0);
                 }
-                System.out.println(attacking);
             } else if (lastMovementDirection.magnitude() == 0) {
                 currentAnimation = idleAnimation;
             } else if (lastMovementDirection.getY() < 0 && !isGrounded) {

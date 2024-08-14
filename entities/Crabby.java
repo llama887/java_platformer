@@ -1,8 +1,6 @@
 package entities;
 
 import java.awt.Graphics;
-import java.nio.Buffer;
-import java.util.Vector;
 
 import components.Animation;
 import components.Collider;
@@ -29,7 +27,7 @@ public class Crabby extends Enemy {
     private final int ATTACK_COLLIDER_X_OFFSET = (int) (Game.SCALE * -30),
             ATTACK_COLLIDER_WIDTH = (int) (82 * Game.SCALE), ATTACK_COLLIDER_HEIGHT = (int) COLLIDER_HEIGHT;
     private boolean facingLeft = true, addedPlayerHitbox = false, playerDamaged = false;
-    private final int ATTACK_DAMAGE = 0;
+    private final int ATTACK_DAMAGE = 20;
 
     public enum CrabbyState {
         IDLE, WALK, ATTACK, HIT, DEATH
@@ -98,9 +96,6 @@ public class Crabby extends Enemy {
         }
         if (aiState != CrabbyState.ATTACK) {
             playerDamaged = false;
-        }
-        if (collider.checkCollision(player.getCollider())) {
-            player.takeDamage(ATTACK_DAMAGE / 2);
         }
         if (collider.checkCollision(player.getAttackCollider())) {
             System.out.println("Crabby hit by player");
@@ -254,5 +249,9 @@ public class Crabby extends Enemy {
             default:
                 break;
         }
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 }

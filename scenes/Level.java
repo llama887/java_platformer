@@ -22,6 +22,7 @@ import entities.Tile;
 import main.Game;
 import main.GamePanel;
 import ui.GameOverOverlay;
+import ui.LevelCompletedOverlay;
 import ui.PauseOverlay;
 import ui.StatusBar;
 
@@ -33,7 +34,7 @@ public class Level extends Scene {
     private Tile[][] map;
     private Player player;
     private boolean key_w, key_s, key_a, key_d, key_space, key_p, key_j, key_esc;
-    private boolean paused;
+    private boolean paused, won;
     private PauseOverlay pauseOverlay;
     private final float MAX_WIDTH, MAX_HEIGHT;
     private final int MAX_WIDTH_IN_TILES, MAX_HEIGHT_IN_TILES;
@@ -66,12 +67,14 @@ public class Level extends Scene {
     private GameOverOverlay gameOverOverlay;
     private String levelAtlasPath, levelDataPath;
     private BufferedImage levelAtlas;
+    private LevelCompletedOverlay levelCompletedOverlay;
 
     public Level(float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
         this.levelAtlasPath = levelAtlasPath;
         this.levelDataPath = levelDataPath;
         pauseOverlay = new PauseOverlay(gamePanel, this);
+        levelCompletedOverlay = new LevelCompletedOverlay(gamePanel, this);
         gameOverOverlay = new GameOverOverlay();
         Level.GRAVITY = GRAVITY;
         try {
@@ -112,6 +115,13 @@ public class Level extends Scene {
         keyListener = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
+                switch (e.getKeyChar()) {
+                    case 'j':
+                        player.setAttacking(true);
+                        break;
+                    default:
+                        break;
+                }
             }
 
             @Override
@@ -133,9 +143,9 @@ public class Level extends Scene {
                     case KeyEvent.VK_D:
                         key_d = true;
                         break;
-                    case KeyEvent.VK_J:
-                        key_j = true;
-                        break;
+                    // case KeyEvent.VK_J:
+                    // key_j = true;
+                    // break;
                     case KeyEvent.VK_SPACE:
                         key_space = true;
                         break;
@@ -169,9 +179,9 @@ public class Level extends Scene {
                     case KeyEvent.VK_D:
                         key_d = false;
                         break;
-                    case KeyEvent.VK_J:
-                        key_j = false;
-                        break;
+                    // case KeyEvent.VK_J:
+                    // key_j = false;
+                    // break;
                     case KeyEvent.VK_SPACE:
                         key_space = false;
                         break;
@@ -221,6 +231,7 @@ public class Level extends Scene {
     }
 
     public void initialize() {
+        won = false;
         sceneEntities.clear();
         pauseOverlay = new PauseOverlay(gamePanel, this);
         player = null;
@@ -314,6 +325,8 @@ public class Level extends Scene {
         sceneEntities.render(g, xLevelOffset, yLevelOffset);
         if (player.getHealth() <= 0) {
             gameOverOverlay.render(g, xLevelOffset, yLevelOffset);
+        } else if (won) {
+            levelCompletedOverlay.render(g, xLevelOffset, yLevelOffset);
         } else if (paused) {
             pauseOverlay.render(g, xLevelOffset, yLevelOffset);
         }
@@ -321,6 +334,17 @@ public class Level extends Scene {
 
     @Override
     public void update() {
+        boolean allDead = true;
+        for (Crabby enemy : crabbies) {
+            if (!enemy.isDead()) {
+                allDead = false;
+            }
+        }
+        if (allDead) {
+            won = true;
+            levelCompletedOverlay.update();
+            return;
+        }
         handleKeyInputs();
         if (player.getHealth() <= 0) {
             return;

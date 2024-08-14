@@ -175,6 +175,10 @@ public class Player implements Renderable, Updateable {
             } else if (attacking) {
                 currentAnimation = attackAnimation;
                 attacking = !currentAnimation.isLastFrame();
+                if (!attacking) {
+                    currentAnimation.setCurrentIndex(0);
+                }
+                System.out.println(attacking);
             } else if (lastMovementDirection.magnitude() == 0) {
                 currentAnimation = idleAnimation;
             } else if (lastMovementDirection.getY() < 0 && !isGrounded) {
@@ -196,9 +200,9 @@ public class Player implements Renderable, Updateable {
                     (int) physicsController.getWidth() * (facingRight ? 1 : -1),
                     (int) physicsController.getHeight(),
                     null);
-            collider.drawHitBox(g, xLevelOffset, yLevelOffset);
-            groundCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
-            attackCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
+            // collider.drawHitBox(g, xLevelOffset, yLevelOffset);
+            // groundCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
+            // attackCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
         }
     }
 

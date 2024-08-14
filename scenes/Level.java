@@ -20,6 +20,7 @@ import entities.Player;
 import entities.Tile;
 import main.Game;
 import main.GamePanel;
+import ui.GameOverOverlay;
 import ui.PauseOverlay;
 import ui.StatusBar;
 
@@ -30,7 +31,7 @@ public class Level extends Scene {
     private BufferedImage levelData = null;
     private Tile[][] map;
     private Player player;
-    private boolean key_w, key_s, key_a, key_d, key_space, key_enter, key_j;
+    private boolean key_w, key_s, key_a, key_d, key_space, key_p, key_j, key_esc;
     private boolean paused;
     private PauseOverlay pauseOverlay;
     private final float MAX_WIDTH, MAX_HEIGHT;
@@ -61,6 +62,7 @@ public class Level extends Scene {
     private Random random = new Random();
     private ArrayList<Crabby> crabbies = new ArrayList<>();
     private StatusBar status;
+    private GameOverOverlay gameOverOverlay;
 
     public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
@@ -134,6 +136,7 @@ public class Level extends Scene {
             smallCloudPositionsY[i] = (int) (90 * Game.SCALE) + random.nextInt((int) (120
                     * Game.SCALE));
         }
+        gameOverOverlay = new GameOverOverlay();
         // create input handlers
         keyListener = new KeyListener() {
             @Override
@@ -165,11 +168,11 @@ public class Level extends Scene {
                     case KeyEvent.VK_SPACE:
                         key_space = true;
                         break;
-                    case KeyEvent.VK_ENTER:
-                        key_enter = true;
+                    case KeyEvent.VK_P:
+                        key_p = true;
                         break;
                     case KeyEvent.VK_ESCAPE:
-                        System.exit(0);
+                        key_esc = true;
                         break;
                     default:
                         break;
@@ -201,8 +204,11 @@ public class Level extends Scene {
                     case KeyEvent.VK_SPACE:
                         key_space = false;
                         break;
-                    case KeyEvent.VK_ENTER:
-                        key_enter = false;
+                    case KeyEvent.VK_P:
+                        key_p = false;
+                        break;
+                    case KeyEvent.VK_ESCAPE:
+                        key_esc = false;
                         break;
                     default:
                         break;
@@ -262,11 +268,14 @@ public class Level extends Scene {
         if (key_space) {
             player.setJump(true);
         }
-        if (key_enter) {
+        if (key_p) {
             paused = true;
         }
         if (key_j) {
             player.setAttacking(true);
+        }
+        if (key_esc && player.getHealth() <= 0) {
+            Game.changeScene(Game.menu, gamePanel);
         }
         player.getPhysicsController()
                 .setMovementDirection(playerXDirection, playerYDirection);
@@ -290,7 +299,9 @@ public class Level extends Scene {
             }
         }
         sceneEntities.render(g, xLevelOffset, yLevelOffset);
-        if (paused) {
+        if (player.getHealth() <= 0) {
+            gameOverOverlay.render(g, xLevelOffset, yLevelOffset);
+        } else if (paused) {
             pauseOverlay.render(g, xLevelOffset, yLevelOffset);
         }
     }
@@ -298,7 +309,9 @@ public class Level extends Scene {
     @Override
     public void update() {
         handleKeyInputs();
-        if (paused) {
+        if (player.getHealth() <= 0) {
+            return;
+        } else if (paused) {
             pauseOverlay.update();
             return;
         }

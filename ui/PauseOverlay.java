@@ -2,7 +2,9 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
@@ -50,52 +52,52 @@ public class PauseOverlay extends Scene {
 
         keyListener = new KeyListener() {
             @Override
-            public void keyTyped(java.awt.event.KeyEvent e) {
+            public void keyTyped(KeyEvent e) {
             }
 
             @Override
-            public void keyPressed(java.awt.event.KeyEvent e) {
+            public void keyPressed(KeyEvent e) {
             }
 
             @Override
-            public void keyReleased(java.awt.event.KeyEvent e) {
+            public void keyReleased(KeyEvent e) {
             }
         };
 
         mouseListener = new MouseListener() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
             }
 
             @Override
-            public void mousePressed(java.awt.event.MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 Button.mousePressed = true;
                 volumnSlider.setDragging(true);
             }
 
             @Override
-            public void mouseReleased(java.awt.event.MouseEvent e) {
+            public void mouseReleased(MouseEvent e) {
                 Button.mousePressed = false;
                 volumnSlider.setDragging(false);
             }
 
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
+            public void mouseEntered(MouseEvent e) {
             }
 
             @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
+            public void mouseExited(MouseEvent e) {
             }
         };
 
         mouseMotionListener = new MouseMotionListener() {
             @Override
-            public void mouseDragged(java.awt.event.MouseEvent e) {
+            public void mouseDragged(MouseEvent e) {
                 volumnSlider.setSliderPosition(e.getX());
             }
 
             @Override
-            public void mouseMoved(java.awt.event.MouseEvent e) {
+            public void mouseMoved(MouseEvent e) {
                 Button.mouseX = e.getX();
                 Button.mouseY = e.getY();
             }

@@ -29,6 +29,7 @@ public class Crabby extends Enemy {
     private final int ATTACK_COLLIDER_X_OFFSET = (int) (Game.SCALE * -30),
             ATTACK_COLLIDER_WIDTH = (int) (82 * Game.SCALE), ATTACK_COLLIDER_HEIGHT = (int) COLLIDER_HEIGHT;
     private boolean facingLeft = true, addedPlayerHitbox = false, playerDamaged = false;
+    private final int ATTACK_DAMAGE = 50;
 
     public enum CrabbyState {
         IDLE, WALK, ATTACK, HIT, DEATH
@@ -185,7 +186,7 @@ public class Crabby extends Enemy {
                     setAiState(CrabbyState.WALK);
                 }
                 if (attackCollider.checkCollision() && attackAnimation.getCurrentIndex() == 3 && !playerDamaged) {
-                    player.takeDamage(10);
+                    player.takeDamage(ATTACK_DAMAGE);
                     playerDamaged = true;
                 }
                 break;

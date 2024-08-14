@@ -230,13 +230,14 @@ public class Level extends Scene {
 
     public void initialize() {
         won = false;
+        paused = false;
         sceneEntities.clear();
         pauseOverlay = new PauseOverlay(gamePanel, this);
         player = null;
         player = new Player(100, 200, 0.80f);
         final int ATLAS_WIDTH = 12;
         final int ATLAS_HEIGHT = 4;
-        int[] blankTile = { 11, 13 };
+        int[] blankTile = { 11 };
         map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT, blankTile);
         Enemy.map = map;
         sceneEntities.addToScene(player);

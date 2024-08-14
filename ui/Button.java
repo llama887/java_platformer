@@ -83,6 +83,6 @@ public abstract class Button implements Renderable, Updateable {
         }
         g.drawImage(buttonStates.getFrame(), xPosition - xLevelOffset, yPosition - yLevelOffset, BUTTON_WIDTH,
                 BUTTON_HEIGHT, null);
-        collider.drawHitBox(g, xLevelOffset, yLevelOffset);
+        // collider.drawHitBox(g, xLevelOffset, yLevelOffset);
     }
 }

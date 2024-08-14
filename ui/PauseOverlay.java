@@ -111,7 +111,7 @@ public class PauseOverlay extends Scene {
             Game.changeScene(Game.menu, gamePanel);
         }
         if (replayButton.getButtonState() == ButtonState.ACTIVATED) {
-            System.out.println("Replay"); // TODO: Implement replay
+            level.initialize();
         }
         if (unpauseButton.getButtonState() == ButtonState.ACTIVATED) {
             level.setPaused(false);

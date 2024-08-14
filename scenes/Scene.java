@@ -35,4 +35,7 @@ public abstract class Scene implements Updateable, Renderable, InputHandler {
     public MouseMotionListener getMouseMotionListener() {
         return mouseMotionListener;
     }
+
+    public void initialize() {
+    }
 }

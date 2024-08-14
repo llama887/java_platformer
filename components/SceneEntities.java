@@ -31,4 +31,9 @@ public class SceneEntities implements Renderable, Updateable {
         }
     }
 
+    public void clear() {
+        renderables.clear();
+        updateables.clear();
+    }
+
 }

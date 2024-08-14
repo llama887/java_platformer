@@ -8,6 +8,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -63,15 +64,16 @@ public class Level extends Scene {
     private ArrayList<Crabby> crabbies = new ArrayList<>();
     private StatusBar status;
     private GameOverOverlay gameOverOverlay;
+    private String levelAtlasPath, levelDataPath;
+    private BufferedImage levelAtlas;
 
-    public Level(Player player, float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
+    public Level(float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
+        this.levelAtlasPath = levelAtlasPath;
+        this.levelDataPath = levelDataPath;
         pauseOverlay = new PauseOverlay(gamePanel, this);
-        this.player = player;
+        gameOverOverlay = new GameOverOverlay();
         Level.GRAVITY = GRAVITY;
-        BufferedImage levelAtlas = null;
-        final int ATLAS_WIDTH = 12;
-        final int ATLAS_HEIGHT = 4;
         try {
             levelAtlas = ImageIO.read(new File(levelAtlasPath));
         } catch (IOException e) {
@@ -97,32 +99,7 @@ public class Level extends Scene {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int[] blankTile = { 11, 13 };
-        map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT, blankTile);
-        Enemy.map = map;
-        sceneEntities.addToScene(player);
-        ArrayList<Enemy> enemies = LevelBuilder.generateEnemies(levelData);
-        for (Enemy enemy : enemies) {
-            crabbies.add(new Crabby(enemy));
-        }
-        for (Crabby enemy : crabbies) {
-            sceneEntities.addToScene(enemy);
-        }
-        Enemy.player = player;
-        for (int y = 0; y < map.length; y++) {
-            for (int x = 0; x < map[y].length; x++) {
-                if (map[y][x].getCollider().isActive()) {
-                    player.getCollider().addOtherCollider(map[y][x].getCollider());
-                    player.getGroundCollider().addOtherCollider(map[y][x].getCollider());
-                    for (Crabby enemy : crabbies) {
-                        enemy.getCollider().addOtherCollider(map[y][x].getCollider());
-                        enemy.getFloorDector().addOtherCollider(map[y][x].getCollider());
-                    }
-                }
-            }
-        }
-        status = new StatusBar(player);
-        sceneEntities.addToScene(status);
+        initialize();
         MAX_WIDTH_IN_TILES = map[0].length;
         MAX_WIDTH = MAX_WIDTH_IN_TILES * Game.SCALE;
         MAX_HEIGHT_IN_TILES = map.length;
@@ -131,12 +108,6 @@ public class Level extends Scene {
         maxTilesOffsetY = MAX_HEIGHT_IN_TILES - Game.HEIGHT_IN_TILES;
         maxOffsetX = maxTilesOffsetX * Game.TILE_SIZE;
         maxOffsetY = maxTilesOffsetY * Game.TILE_SIZE;
-        smallCloudPositionsY = new int[8];
-        for (int i = 0; i < smallCloudPositionsY.length; i++) {
-            smallCloudPositionsY[i] = (int) (90 * Game.SCALE) + random.nextInt((int) (120
-                    * Game.SCALE));
-        }
-        gameOverOverlay = new GameOverOverlay();
         // create input handlers
         keyListener = new KeyListener() {
             @Override
@@ -247,6 +218,48 @@ public class Level extends Scene {
             public void mouseMoved(MouseEvent e) {
             }
         };
+    }
+
+    public void initialize() {
+        sceneEntities.clear();
+        pauseOverlay = new PauseOverlay(gamePanel, this);
+        player = null;
+        player = new Player(100, 200, 0.75f);
+        final int ATLAS_WIDTH = 12;
+        final int ATLAS_HEIGHT = 4;
+        int[] blankTile = { 11, 13 };
+        map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT, blankTile);
+        Enemy.map = map;
+        sceneEntities.addToScene(player);
+        ArrayList<Enemy> enemies = LevelBuilder.generateEnemies(levelData);
+        crabbies.clear();
+        for (Enemy enemy : enemies) {
+            crabbies.add(new Crabby(enemy));
+        }
+        for (Crabby enemy : crabbies) {
+            sceneEntities.addToScene(enemy);
+        }
+        Enemy.player = player;
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[y].length; x++) {
+                if (map[y][x].getCollider().isActive()) {
+                    player.getCollider().addOtherCollider(map[y][x].getCollider());
+                    player.getGroundCollider().addOtherCollider(map[y][x].getCollider());
+                    for (Crabby enemy : crabbies) {
+                        enemy.getCollider().addOtherCollider(map[y][x].getCollider());
+                        enemy.getFloorDector().addOtherCollider(map[y][x].getCollider());
+                    }
+                }
+            }
+        }
+        status = new StatusBar(player);
+        sceneEntities.addToScene(status);
+        smallCloudPositionsY = new int[8];
+        for (int i = 0; i < smallCloudPositionsY.length; i++) {
+            smallCloudPositionsY[i] = (int) (90 * Game.SCALE) + random.nextInt((int) (120
+                    * Game.SCALE));
+        }
+        gameOverOverlay = new GameOverOverlay();
     }
 
     public void handleKeyInputs() {

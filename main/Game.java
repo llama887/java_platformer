@@ -39,8 +39,7 @@ public class Game implements Runnable {
 
     public void initialize() {
         menu = new Menu(gamePanel);
-        Player player = new Player(100, 200, 0.75f);
-        level1 = new Level(player, 0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data_long.png",
+        level1 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data_long.png",
                 gamePanel);
         Game.changeScene(menu, gamePanel);
     }
@@ -57,6 +56,7 @@ public class Game implements Runnable {
         if (currentScene.isEmpty() || currentScene.get() != newScene) {
             Scene previousScene = currentScene.orElse(menu);
             currentScene = Optional.of(newScene);
+            currentScene.get().initialize();
             gamePanel.updateInputHandler(previousScene, newScene);
         }
     }

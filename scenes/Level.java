@@ -350,7 +350,8 @@ public class Level extends Scene {
             pauseOverlay.update();
             return;
         }
-        if (player.getPhysicsController().getY() + yLevelOffset > Game.GAME_HEIGHT) {
+        if (player.getPhysicsController().getY() - yLevelOffset > Game.GAME_HEIGHT ||
+                player.getPhysicsController().getX() - xLevelOffset > Game.GAME_WIDTH) {
             player.setHealth(0);
         }
         sceneEntities.update();

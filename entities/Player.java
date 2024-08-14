@@ -39,7 +39,7 @@ public class Player implements Renderable, Updateable {
     private final float RIGHT_ATTACK_COLLIDER_OFFSET = COLLIDER_WIDTH + 10 * Game.SCALE,
             LEFT_ATTACK_COLLIDER_OFFSET = -COLLIDER_WIDTH - 10 * Game.SCALE,
             ATTACK_COLLIDER_Y_OFFSET = 10 * Game.SCALE;
-    private float xAttackColliderOffset = LEFT_ATTACK_COLLIDER_OFFSET;
+    private float xAttackColliderOffset = RIGHT_ATTACK_COLLIDER_OFFSET;
     private boolean attacking = false, facingRight = true, dead = false;
 
     public Player(float x, float y, float speed) {
@@ -51,6 +51,7 @@ public class Player implements Renderable, Updateable {
         attackCollider = new Collider(collider.getX() + xAttackColliderOffset,
                 collider.getY() + ATTACK_COLLIDER_Y_OFFSET,
                 ATTACK_COLLIDER_WIDTH, ATTACK_COLLIDER_HEIGHT);
+        attackCollider.setActive(false);
         groundCollider = new Collider(collider.getX() + GROUNDED_COLLIDER_X_OFFSET,
                 collider.getY() + GROUNDED_COLLIDER_Y_OFFSET, collider.getHitBox().width, 1);
         idleAnimation = new Animation(PLAYER_ATLAS, ANIMATION_SPEED, SPRITE_WIDTH, SPRITE_HEIGHT,
@@ -74,6 +75,11 @@ public class Player implements Renderable, Updateable {
         if (health <= 0) {
             return;
         }
+        if (currentAnimation == hitAnimation) {
+            return;
+        }
+        attackCollider
+                .setActive(currentAnimation == attackAnimation && currentAnimation.getCurrentIndex() == 1);
         if (lastMovementDirection.getX() > 0) {
             xAttackColliderOffset = RIGHT_ATTACK_COLLIDER_OFFSET;
             facingRight = true;
@@ -164,6 +170,8 @@ public class Player implements Renderable, Updateable {
                 if (currentAnimation.isLastFrame()) {
                     dead = true;
                 }
+            } else if (currentAnimation == hitAnimation && currentAnimation.isLastFrame()) {
+                currentAnimation = idleAnimation;
             } else if (attacking) {
                 currentAnimation = attackAnimation;
                 attacking = !currentAnimation.isLastFrame();
@@ -232,6 +240,7 @@ public class Player implements Renderable, Updateable {
 
     public void takeDamage(int damage) {
         health -= damage;
+        currentAnimation = hitAnimation;
     }
 
     public void setAttacking(boolean attacking) {
@@ -241,4 +250,17 @@ public class Player implements Renderable, Updateable {
     public boolean isDead() {
         return dead;
     }
+
+    public boolean isAttacking() {
+        return attacking;
+    }
+
+    public Collider getAttackCollider() {
+        return attackCollider;
+    }
+
+    public boolean canDoDamage() {
+        return currentAnimation == attackAnimation && currentAnimation.getCurrentIndex() == 1;
+    }
+
 }

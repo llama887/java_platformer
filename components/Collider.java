@@ -105,7 +105,7 @@ public class Collider {
      * @param g the Graphics object
      */
     public void drawHitBox(Graphics g, int xLevelOffset, int yLevelOffset) {
-        g.setColor(Color.RED);
+        g.setColor((isActive) ? Color.BLUE : Color.RED);
         g.drawRect((int) hitBox.x - xLevelOffset, (int) hitBox.y - yLevelOffset, (int) hitBox.width,
                 (int) hitBox.height);
     }
@@ -118,7 +118,7 @@ public class Collider {
      */
     public boolean checkCollision(Collider other) {
 
-        if (!other.isActive()) {
+        if (!other.isActive() || !isActive) {
             return false;
         }
         // Get the hitboxes of both colliders

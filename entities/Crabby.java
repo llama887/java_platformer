@@ -29,11 +29,13 @@ public class Crabby extends Enemy {
     private final int ATTACK_COLLIDER_X_OFFSET = (int) (Game.SCALE * -30),
             ATTACK_COLLIDER_WIDTH = (int) (82 * Game.SCALE), ATTACK_COLLIDER_HEIGHT = (int) COLLIDER_HEIGHT;
     private boolean facingLeft = true, addedPlayerHitbox = false, playerDamaged = false;
-    private final int ATTACK_DAMAGE = 50;
+    private final int ATTACK_DAMAGE = 0;
 
     public enum CrabbyState {
         IDLE, WALK, ATTACK, HIT, DEATH
     }
+
+    private boolean dead = false;
 
     private CrabbyState aiState = CrabbyState.IDLE;
 
@@ -65,6 +67,9 @@ public class Crabby extends Enemy {
 
     @Override
     public void render(Graphics g, int xLevelOffset, int yLevelOffset) {
+        if (dead) {
+            return;
+        }
         if (currentAnimation.getAnimationTick() >= currentAnimation.getAnimationSpeed()) {
             currentAnimation.nextFrame();
             currentFrame = currentAnimation.getFrame();
@@ -80,9 +85,9 @@ public class Crabby extends Enemy {
                 (int) physicsController.getWidth() * (facingLeft ? 1 : -1),
                 (int) physicsController.getHeight(),
                 null);
-        collider.drawHitBox(g, xLevelOffset, yLevelOffset);
-        floorDector.drawHitBox(g, xLevelOffset, yLevelOffset);
-        attackCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
+        // collider.drawHitBox(g, xLevelOffset, yLevelOffset);
+        // floorDector.drawHitBox(g, xLevelOffset, yLevelOffset);
+        // attackCollider.drawHitBox(g, xLevelOffset, yLevelOffset);
     }
 
     @Override
@@ -94,12 +99,19 @@ public class Crabby extends Enemy {
         if (aiState != CrabbyState.ATTACK) {
             playerDamaged = false;
         }
+        if (collider.checkCollision(player.getCollider())) {
+            player.takeDamage(ATTACK_DAMAGE / 2);
+        }
+        if (collider.checkCollision(player.getAttackCollider())) {
+            System.out.println("Crabby hit by player");
+            setAiState(CrabbyState.HIT);
+        }
         float initialX = physicsController.getX();
         float initialY = physicsController.getY();
         physicsController.unblockAllMovement();
         switch (aiState) {
             case IDLE:
-                aiState = CrabbyState.WALK;
+                setAiState(CrabbyState.WALK);
                 break;
             case WALK:
                 if (lastMovementDirection.getX() > 0) {
@@ -188,6 +200,17 @@ public class Crabby extends Enemy {
                 if (attackCollider.checkCollision() && attackAnimation.getCurrentIndex() == 3 && !playerDamaged) {
                     player.takeDamage(ATTACK_DAMAGE);
                     playerDamaged = true;
+                }
+                break;
+            case HIT:
+                collider.setActive(false);
+                if (hitAnimation.isLastFrame()) {
+                    setAiState(CrabbyState.DEATH);
+                }
+                break;
+            case DEATH:
+                if (deathAnimation.isLastFrame()) {
+                    dead = true;
                 }
                 break;
             default:

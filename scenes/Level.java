@@ -233,7 +233,7 @@ public class Level extends Scene {
         sceneEntities.clear();
         pauseOverlay = new PauseOverlay(gamePanel, this);
         player = null;
-        player = new Player(100, 200, 0.75f);
+        player = new Player(100, 200, 0.80f);
         final int ATLAS_WIDTH = 12;
         final int ATLAS_HEIGHT = 4;
         int[] blankTile = { 11, 13 };
@@ -349,6 +349,9 @@ public class Level extends Scene {
         } else if (paused) {
             pauseOverlay.update();
             return;
+        }
+        if (player.getPhysicsController().getY() + yLevelOffset > Game.GAME_HEIGHT) {
+            player.setHealth(0);
         }
         sceneEntities.update();
         int playerX = (int) player.getPhysicsController().getX();

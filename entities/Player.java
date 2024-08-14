@@ -29,7 +29,7 @@ public class Player implements Renderable, Updateable {
             COLLIDER_WIDTH = 18 * Game.SCALE, COLLIDER_HEIGHT = 28 * Game.SCALE;
     private final float GROUNDED_COLLIDER_X_OFFSET, GROUNDED_COLLIDER_Y_OFFSET;
     private boolean jump = false, isGrounded = false, isFastFalling = false;
-    private final float JUMP_FORCE = -0.75f * Game.SCALE;
+    private final float JUMP_FORCE = -0.85f * Game.SCALE;
     private final float FAST_FALL = 0.1f * Game.SCALE;
     private Vector2D lastMovementDirection = new Vector2D(0, 0);
     private final int MAX_HEALTH = 100;

@@ -42,11 +42,11 @@ public class Game implements Runnable {
 
     public void initialize() {
         menu = new Menu(gamePanel);
-        level1 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data_long.png",
+        level1 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/1.png",
                 gamePanel);
-        level2 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data_long.png",
+        level2 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/2.png",
                 gamePanel);
-        level3 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/level_one_data_long.png",
+        level3 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/3.png",
                 gamePanel);
         level1.setNextScene(level2);
         level2.setNextScene(level3);

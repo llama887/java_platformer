@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import scenes.Menu;
 import scenes.Scene;
+import ui.AudioOptions;
 import scenes.Level;
 
 public class Game implements Runnable {
@@ -28,6 +29,7 @@ public class Game implements Runnable {
     public static Level level3;
     public static Level[] levels = { level1, level2, level3 };
     public static Optional<Scene> currentScene = Optional.empty();
+    public static AudioOptions audioOptions;
 
     public Game() {
         gamePanel = new GamePanel(this);
@@ -40,6 +42,7 @@ public class Game implements Runnable {
     }
 
     public void initialize() {
+        audioOptions = new AudioOptions(gamePanel);
         menu = new Menu(gamePanel);
         level1 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/1.png",
                 gamePanel);

@@ -23,13 +23,10 @@ public class PauseOverlay extends Scene {
     private final int overlayX, overlayY, overlayWidth, overlayHeight;
     private BufferedImage background = null;
     private final String BACKGROUND_PATH = "assets/pause_overlay.png";
-    private SoundButton musicButton = new SoundButton((int) (450 * Game.SCALE), (int) (140 * Game.SCALE));
-    private SoundButton sfxButton = new SoundButton((int) (450 * Game.SCALE), (int) (186 * Game.SCALE));
     private URMButton unpauseButton = new URMButton((int) (462 * Game.SCALE), (int) (325 * Game.SCALE), 0);
     private URMButton replayButton = new URMButton((int) (387 * Game.SCALE), (int) (325 * Game.SCALE), 1);
     private URMButton menuButton = new URMButton((int) (313 * Game.SCALE), (int) (325 * Game.SCALE), 2);
     private Level level;
-    private VolumnSlider volumnSlider = new VolumnSlider((int) (309 * Game.SCALE), (int) (278 * Game.SCALE));
 
     public PauseOverlay(GamePanel gamePanel, Level level) {
         super(gamePanel);
@@ -43,12 +40,9 @@ public class PauseOverlay extends Scene {
         overlayHeight = (int) (background.getHeight() * Game.SCALE);
         overlayX = Game.GAME_WIDTH / 2 - overlayWidth / 2;
         overlayY = (int) (25 * Game.SCALE);
-        sceneEntities.addToScene(musicButton);
-        sceneEntities.addToScene(sfxButton);
         sceneEntities.addToScene(menuButton);
         sceneEntities.addToScene(replayButton);
         sceneEntities.addToScene(unpauseButton);
-        sceneEntities.addToScene(volumnSlider);
 
         keyListener = new KeyListener() {
             @Override
@@ -107,6 +101,7 @@ public class PauseOverlay extends Scene {
     @Override
     public void update() {
         sceneEntities.update();
+        Game.audioOptions.update();
         if (menuButton.getButtonState() == ButtonState.ACTIVATED) {
             Game.changeScene(Game.menu, gamePanel);
         }
@@ -125,6 +120,7 @@ public class PauseOverlay extends Scene {
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
         g.drawImage(background, overlayX, overlayY, overlayWidth, overlayHeight,
                 gamePanel);
+        Game.audioOptions.render(g, 0, 0);
         sceneEntities.render(g, 0, 0);
     }
 

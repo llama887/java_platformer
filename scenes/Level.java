@@ -393,12 +393,12 @@ public class Level extends Scene {
 
     @Override
     public MouseListener getMouseListener() {
-        return pauseOverlay.getMouseListener();
+        return Game.audioOptions.getMouseListener();
     }
 
     @Override
     public MouseMotionListener getMouseMotionListener() {
-        return pauseOverlay.getMouseMotionListener();
+        return Game.audioOptions.getMouseMotionListener();
     }
 
     public boolean isPaused() {

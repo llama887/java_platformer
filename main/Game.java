@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.util.Optional;
 
 import scenes.Menu;
+import scenes.OptionsMenu;
 import scenes.Scene;
 import ui.AudioOptions;
 import scenes.Level;
@@ -24,6 +25,7 @@ public class Game implements Runnable {
     public final static int GAME_HEIGHT = HEIGHT_IN_TILES * TILE_SIZE;
 
     public static Menu menu;
+    public static OptionsMenu optionsMenu;
     public static Level level1;
     public static Level level2;
     public static Level level3;
@@ -44,6 +46,7 @@ public class Game implements Runnable {
     public void initialize() {
         audioOptions = new AudioOptions(gamePanel);
         menu = new Menu(gamePanel);
+        optionsMenu = new OptionsMenu(gamePanel);
         level1 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/1.png",
                 gamePanel);
         level2 = new Level(0.028f * Game.SCALE, "assets/outside_sprites.png", "assets/2.png",

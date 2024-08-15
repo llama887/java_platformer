@@ -2,9 +2,6 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -39,41 +36,7 @@ public class LevelCompletedOverlay extends Scene {
 
         sceneEntities.addToScene(nextButton);
         sceneEntities.addToScene(menuButton);
-        mouseListener = new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-                Button.mousePressed = true;
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                Button.mousePressed = false;
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
-        };
-
-        mouseMotionListener = new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                Button.mouseX = e.getX();
-                Button.mouseY = e.getY();
-            }
-        };
     }
 
     @Override

@@ -2,11 +2,6 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -43,59 +38,6 @@ public class PauseOverlay extends Scene {
         sceneEntities.addToScene(menuButton);
         sceneEntities.addToScene(replayButton);
         sceneEntities.addToScene(unpauseButton);
-
-        keyListener = new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-        };
-
-        mouseListener = new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                Button.mousePressed = true;
-                volumnSlider.setDragging(true);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                Button.mousePressed = false;
-                volumnSlider.setDragging(false);
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
-        };
-
-        mouseMotionListener = new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                volumnSlider.setSliderPosition(e.getX());
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                Button.mouseX = e.getX();
-                Button.mouseY = e.getY();
-            }
-        };
     }
 
     @Override

@@ -108,6 +108,9 @@ public class Menu extends Scene {
         if (playButton.getButtonState() == ButtonState.ACTIVATED) {
             Game.changeScene(Game.level1, gamePanel);
         }
+        if (optionsButton.getButtonState() == ButtonState.ACTIVATED) {
+            Game.changeScene(Game.optionsMenu, gamePanel);
+        }
         if (quitButton.getButtonState() == ButtonState.ACTIVATED) {
             System.exit(0);
         }

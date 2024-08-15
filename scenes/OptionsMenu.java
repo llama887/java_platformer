@@ -44,6 +44,7 @@ public class OptionsMenu extends Scene {
     public void update() {
         menuButton.update();
         Game.audioOptions.update();
+        Game.audioPlayer.stopEffects();
         if (menuButton.getButtonState() == ButtonState.ACTIVATED) {
             Game.changeScene(Game.menu, gamePanel);
         }

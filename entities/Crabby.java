@@ -27,7 +27,7 @@ public class Crabby extends Enemy {
     private final int ATTACK_COLLIDER_X_OFFSET = (int) (Game.SCALE * -30),
             ATTACK_COLLIDER_WIDTH = (int) (82 * Game.SCALE), ATTACK_COLLIDER_HEIGHT = (int) COLLIDER_HEIGHT;
     private boolean facingLeft = true, addedPlayerHitbox = false, playerDamaged = false;
-    private final int ATTACK_DAMAGE = 20;
+    private final int ATTACK_DAMAGE = 100;
     // Collider wallCollider;
     // private final float WALL_COLLIDER_X_OFFSET = COLLIDER_HEIGHT / 2,
     // WALL_COLLIDER_WIDTH = (int) (82 * Game.SCALE);

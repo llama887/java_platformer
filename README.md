@@ -10,5 +10,3 @@ Player can move with WASD or arrow keys and space to jump. Attack using `j`. Cle
 
 Pause the game at any time using `p`.
 
-## Known Bugs
-Contains various bugs related to audio.

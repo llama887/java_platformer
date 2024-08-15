@@ -8,11 +8,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.Buffer;
-
 import javax.imageio.ImageIO;
-
-import components.SceneEntities;
 import main.Game;
 import main.GamePanel;
 import ui.Button;
@@ -111,6 +107,9 @@ public class Menu extends Scene {
         sceneEntities.update();
         if (playButton.getButtonState() == ButtonState.ACTIVATED) {
             Game.changeScene(Game.level1, gamePanel);
+        }
+        if (quitButton.getButtonState() == ButtonState.ACTIVATED) {
+            System.exit(0);
         }
         Button.resetMouseStates();
     }

@@ -73,7 +73,7 @@ public class Level extends Scene {
         this.levelDataPath = levelDataPath;
         pauseOverlay = new PauseOverlay(gamePanel, this);
         levelCompletedOverlay = new LevelCompletedOverlay(gamePanel, this);
-        gameOverOverlay = new GameOverOverlay();
+        gameOverOverlay = new GameOverOverlay(gamePanel, this);
         Level.GRAVITY = GRAVITY;
         try {
             levelAtlas = ImageIO.read(new File(levelAtlasPath));
@@ -269,7 +269,7 @@ public class Level extends Scene {
             smallCloudPositionsY[i] = (int) (90 * Game.SCALE) + random.nextInt((int) (120
                     * Game.SCALE));
         }
-        gameOverOverlay = new GameOverOverlay();
+        gameOverOverlay = new GameOverOverlay(gamePanel, this);
     }
 
     public void handleKeyInputs() {
@@ -346,6 +346,7 @@ public class Level extends Scene {
         }
         handleKeyInputs();
         if (player.getHealth() <= 0) {
+            gameOverOverlay.update();
             return;
         } else if (paused) {
             pauseOverlay.update();

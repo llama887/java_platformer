@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import scenes.Menu;
 import scenes.Scene;
-import entities.Player;
 import scenes.Level;
 
 public class Game implements Runnable {

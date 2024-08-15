@@ -2,14 +2,11 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import main.Game;
@@ -99,5 +96,4 @@ public class LevelCompletedOverlay extends Scene {
         menuButton.render(g, 0, 0);
         nextButton.render(g, 0, 0);
     }
-
 }

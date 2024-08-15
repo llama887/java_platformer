@@ -174,6 +174,11 @@ public class AudioPlayer {
         }
     }
 
+    public void stopEffects(int effect) {
+        if (effects[effect].isActive())
+            effects[effect].stop();
+    }
+
     public int getCurrentSongID() {
         return currentSongId;
     }

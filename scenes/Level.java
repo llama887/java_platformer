@@ -369,6 +369,7 @@ public class Level extends Scene {
             pauseOverlay.update();
             return;
         }
+
         if (!Game.audioPlayer.playingSong()) {
             if (this == Game.level1)
                 Game.audioPlayer.playSong(AudioPlayer.LEVEL_1);
@@ -377,6 +378,7 @@ public class Level extends Scene {
             if (this == Game.level3)
                 Game.audioPlayer.playSong(AudioPlayer.LEVEL_1);
         }
+        Game.audioPlayer.stopEffects(AudioPlayer.GAMEOVER);
         if (player.getPhysicsController().getY() - yLevelOffset > Game.GAME_HEIGHT ||
                 player.getPhysicsController().getX() - xLevelOffset > Game.GAME_WIDTH) {
             player.setHealth(0);

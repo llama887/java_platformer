@@ -29,7 +29,7 @@ public class AudioPlayer {
 
     private Clip[] songs, effects;
     private int currentSongId;
-    private float volume = 1f;
+    private float volume = 0.8f;
     private boolean songMute, effectMute;
     private Random rand = new Random();
 
@@ -89,7 +89,7 @@ public class AudioPlayer {
     }
 
     public void setVolume(float volume) {
-        this.volume = volume;
+        this.volume = 0.6f + volume * 0.4f;
         updateSongVolume();
         updateEffectsVolume();
     }
@@ -131,16 +131,16 @@ public class AudioPlayer {
         songs[currentSongId].loop(Clip.LOOP_CONTINUOUSLY);
     }
 
-    public void toggleSongMute() {
-        this.songMute = !songMute;
+    public void toggleSongMute(boolean mute) {
+        this.songMute = mute;
         for (Clip c : songs) {
             BooleanControl booleanControl = (BooleanControl) c.getControl(BooleanControl.Type.MUTE);
             booleanControl.setValue(songMute);
         }
     }
 
-    public void toggleEffectMute() {
-        this.effectMute = !effectMute;
+    public void toggleEffectMute(boolean mute) {
+        this.effectMute = mute;
         for (Clip c : effects) {
             BooleanControl booleanControl = (BooleanControl) c.getControl(BooleanControl.Type.MUTE);
             booleanControl.setValue(effectMute);

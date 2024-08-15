@@ -61,7 +61,11 @@ public class AudioOptions extends Scene {
         mouseMotionListener = new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
+                float previousVolumn = volumnSlider.getPercentage();
                 volumnSlider.setSliderPosition(e.getX());
+                float newVolumn = volumnSlider.getPercentage();
+                if (previousVolumn != newVolumn)
+                    Game.audioPlayer.setVolume(newVolumn);
             }
 
             @Override
@@ -74,19 +78,11 @@ public class AudioOptions extends Scene {
 
     @Override
     public void update() {
-        /*
-         * if (musicButton.getButtonState() == ButtonState.ACTIVATED) {
-         * Game.musicEnabled = !Game.musicEnabled;
-         * musicButton.setSoundEnabled(Game.musicEnabled);
-         * }
-         * if (sfxButton.getButtonState() == ButtonState.ACTIVATED) {
-         * Game.sfxEnabled = !Game.sfxEnabled;
-         * sfxButton.setSoundEnabled(Game.sfxEnabled);
-         * }
-         */
         volumnSlider.update();
         musicButton.update();
+        Game.audioPlayer.toggleSongMute(musicButton.isMuted());
         sfxButton.update();
+        Game.audioPlayer.toggleEffectMute(sfxButton.isMuted());
         Button.resetMouseStates();
     }
 

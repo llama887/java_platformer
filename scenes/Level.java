@@ -16,6 +16,7 @@ import entities.Crabby;
 import entities.Enemy;
 import entities.Player;
 import entities.Tile;
+import main.AudioPlayer;
 import main.Game;
 import main.GamePanel;
 import ui.GameOverOverlay;
@@ -62,15 +63,13 @@ public class Level extends Scene {
     private ArrayList<Crabby> crabbies = new ArrayList<>();
     private StatusBar status;
     private GameOverOverlay gameOverOverlay;
-    private String levelAtlasPath, levelDataPath;
     private BufferedImage levelAtlas;
     private LevelCompletedOverlay levelCompletedOverlay;
     private Scene nextScene;
+    private boolean playingCompletionMusic = false, playingGameOverMusic = false;
 
     public Level(float GRAVITY, String levelAtlasPath, String levelDataPath, GamePanel gamePanel) {
         super(gamePanel);
-        this.levelAtlasPath = levelAtlasPath;
-        this.levelDataPath = levelDataPath;
         pauseOverlay = new PauseOverlay(gamePanel, this);
         levelCompletedOverlay = new LevelCompletedOverlay(gamePanel, this);
         gameOverOverlay = new GameOverOverlay(gamePanel, this);
@@ -229,6 +228,8 @@ public class Level extends Scene {
     }
 
     public void initialize() {
+        playingCompletionMusic = false;
+        playingGameOverMusic = false;
         won = false;
         paused = false;
         sceneEntities.clear();
@@ -341,12 +342,20 @@ public class Level extends Scene {
         }
         if (allDead) {
             won = true;
+            if (!playingCompletionMusic)
+                Game.audioPlayer.lvlCompleted();
+            playingCompletionMusic = true;
             levelCompletedOverlay.update();
             return;
         }
         handleKeyInputs();
         if (player.getHealth() <= 0) {
             gameOverOverlay.update();
+            if (!playingGameOverMusic) {
+                Game.audioPlayer.stopSong();
+                Game.audioPlayer.playEffect(AudioPlayer.GAMEOVER);
+                playingGameOverMusic = true;
+            }
             return;
         } else if (paused) {
             pauseOverlay.update();

@@ -81,4 +81,12 @@ public class VolumnSlider extends Button {
         return isDragging;
     }
 
+    public float getPercentage() {
+        float range = maxX - minX;
+        float value = xPosition - minX;
+        float floatValue = value / range;
+        // System.out.println(floatValue);
+        return floatValue;
+    }
+
 }

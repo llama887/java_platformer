@@ -167,4 +167,19 @@ public class AudioPlayer {
         }
     }
 
+    public void stopEffects() {
+        for (Clip c : effects) {
+            if (c.isActive())
+                c.stop();
+        }
+    }
+
+    public int getCurrentSongID() {
+        return currentSongId;
+    }
+
+    public boolean playingSong() {
+        return songs[currentSongId].isActive();
+    }
+
 }

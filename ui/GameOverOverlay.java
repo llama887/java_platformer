@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+
+import main.AudioPlayer;
 import main.Game;
 import main.GamePanel;
 import scenes.Level;

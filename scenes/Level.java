@@ -238,6 +238,14 @@ public class Level extends Scene {
         player = new Player(100, 200, 0.80f);
         final int ATLAS_WIDTH = 12;
         final int ATLAS_HEIGHT = 4;
+        Game.audioPlayer.stopSong();
+        Game.audioPlayer.stopEffects();
+        if (this == Game.level1)
+            Game.audioPlayer.playSong(AudioPlayer.LEVEL_1);
+        if (this == Game.level2)
+            Game.audioPlayer.playSong(AudioPlayer.LEVEL_2);
+        if (this == Game.level3)
+            Game.audioPlayer.playSong(AudioPlayer.LEVEL_1);
         int[] blankTile = { 11 };
         map = LevelBuilder.generateMap(levelData, levelAtlas, ATLAS_WIDTH, ATLAS_HEIGHT, blankTile);
         Enemy.map = map;
@@ -360,6 +368,14 @@ public class Level extends Scene {
         } else if (paused) {
             pauseOverlay.update();
             return;
+        }
+        if (!Game.audioPlayer.playingSong()) {
+            if (this == Game.level1)
+                Game.audioPlayer.playSong(AudioPlayer.LEVEL_1);
+            if (this == Game.level2)
+                Game.audioPlayer.playSong(AudioPlayer.LEVEL_2);
+            if (this == Game.level3)
+                Game.audioPlayer.playSong(AudioPlayer.LEVEL_1);
         }
         if (player.getPhysicsController().getY() - yLevelOffset > Game.GAME_HEIGHT ||
                 player.getPhysicsController().getX() - xLevelOffset > Game.GAME_WIDTH) {

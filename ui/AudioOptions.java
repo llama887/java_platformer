@@ -92,4 +92,5 @@ public class AudioOptions extends Scene {
         musicButton.render(g, 0, 0);
         sfxButton.render(g, 0, 0);
     }
+
 }

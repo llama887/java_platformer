@@ -248,6 +248,9 @@ public class Player implements Renderable, Updateable {
 
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
+        if (attacking) {
+            Game.audioPlayer.playAttackSound();
+        }
     }
 
     public boolean isDead() {

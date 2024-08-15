@@ -32,6 +32,7 @@ public class Game implements Runnable {
     public static Level[] levels = { level1, level2, level3 };
     public static Optional<Scene> currentScene = Optional.empty();
     public static AudioOptions audioOptions;
+    public static AudioPlayer audioPlayer = new AudioPlayer();
 
     public Game() {
         gamePanel = new GamePanel(this);
@@ -69,6 +70,14 @@ public class Game implements Runnable {
 
     public static void changeScene(Scene newScene, GamePanel gamePanel) {
         if (currentScene.isEmpty() || currentScene.get() != newScene) {
+            if (newScene == menu)
+                audioPlayer.playSong(AudioPlayer.MENU_1);
+            if (newScene == level1)
+                audioPlayer.playSong(AudioPlayer.LEVEL_1);
+            if (newScene == level2)
+                audioPlayer.playSong(AudioPlayer.LEVEL_2);
+            if (newScene == level3)
+                audioPlayer.playSong(AudioPlayer.LEVEL_1);
             Scene previousScene = currentScene.orElse(menu);
             currentScene = Optional.of(newScene);
             currentScene.get().initialize();

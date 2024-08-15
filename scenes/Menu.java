@@ -105,6 +105,7 @@ public class Menu extends Scene {
     @Override
     public void update() {
         sceneEntities.update();
+        Game.audioPlayer.stopEffects();
         if (playButton.getButtonState() == ButtonState.ACTIVATED) {
             Game.changeScene(Game.level1, gamePanel);
         }

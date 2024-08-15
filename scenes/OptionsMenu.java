@@ -1,6 +1,8 @@
 package scenes;
 
 import java.awt.Graphics;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +11,8 @@ import javax.imageio.ImageIO;
 
 import main.Game;
 import main.GamePanel;
+import ui.Button;
+import ui.Button.ButtonState;
 import ui.URMButton;
 
 public class OptionsMenu extends Scene {
@@ -16,7 +20,7 @@ public class OptionsMenu extends Scene {
     private final String BACKGROUND_PATH = "assets/options_background.png",
             MENU_BACKGROUND_PATH = "assets/background_menu.png";
     private final int MENU_X, MENU_Y, MENU_WIDTH, MENU_HEIGHT;
-    private URMButton menuButton = new URMButton((int) (330 * Game.SCALE), (int) (195 * Game.SCALE), 2);
+    private URMButton menuButton = new URMButton((int) (387 * Game.SCALE), (int) (325 * Game.SCALE), 2);
 
     public OptionsMenu(GamePanel gamePanel) {
         super(gamePanel);
@@ -38,7 +42,12 @@ public class OptionsMenu extends Scene {
 
     @Override
     public void update() {
+        menuButton.update();
         Game.audioOptions.update();
+        if (menuButton.getButtonState() == ButtonState.ACTIVATED) {
+            Game.changeScene(Game.menu, gamePanel);
+        }
+        Button.resetMouseStates();
     }
 
     @Override
@@ -46,6 +55,16 @@ public class OptionsMenu extends Scene {
         g.drawImage(menuBackground, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         g.drawImage(background, MENU_X, MENU_Y, MENU_WIDTH, MENU_HEIGHT, null);
         Game.audioOptions.render(g, 0, 0);
+        menuButton.render(g, 0, 0);
     }
 
+    @Override
+    public MouseListener getMouseListener() {
+        return Game.audioOptions.getMouseListener();
+    }
+
+    @Override
+    public MouseMotionListener getMouseMotionListener() {
+        return Game.audioOptions.getMouseMotionListener();
+    }
 }
